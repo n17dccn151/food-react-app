@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import Food from './Product';
 import Loading from './Loading';
-import { useGlobalContext } from '../context';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../actions/productActions.js';
 

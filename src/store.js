@@ -7,6 +7,12 @@ import {
   productUpdateReducer,
 } from './reducers/productReducers.js';
 
+import {
+  categoryListReducer,
+  categoryDetailsReducer,
+  categoryUpdateReducer,
+} from './reducers/categoryReducers.js';
+
 import { cartReducer } from './reducers/cartReducers.js';
 import {
   userLoginReducer,
@@ -14,6 +20,9 @@ import {
   userDetailsReducer,
   userUpdateReducer,
 } from './reducers/userReducers.js';
+
+import { imageCreateReducer } from './reducers/imageReducer.js';
+
 import {
   orderMyListReducer,
   orderDetailsReducer,
@@ -21,6 +30,10 @@ import {
 } from './reducers/orderReducers.js';
 
 const reducer = combineReducers({
+  categoryList: categoryListReducer,
+  categoryDetails: categoryDetailsReducer,
+  categoryUpdate: categoryUpdateReducer,
+
   productList: productListReducer,
   productDetails: productDetailsReducer,
   productUpdate: productUpdateReducer,
@@ -34,6 +47,8 @@ const reducer = combineReducers({
   orderMyList: orderMyListReducer,
   orderDetails: orderDetailsReducer,
   orderList: orderListReducer,
+
+  imageProduct: imageCreateReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
@@ -45,18 +60,17 @@ const initialState = {
     loading: true,
   },
 
-  // productDetails: {
-  //   loading: true,
-  // },
+  productDetails: {
+    loading: true,
+  },
 
   cart: {
     loading: true,
   },
   userLogin: {
     loading: false,
+    userInfo: userInfoFromStorage,
   },
-
-  userLogin: { userInfo: userInfoFromStorage },
 
   orderMyList: {
     loading: true,

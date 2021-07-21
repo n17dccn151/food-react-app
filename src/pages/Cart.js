@@ -20,18 +20,14 @@ const Cart = ({ match, location, history }) => {
   const productId = match.params.id;
   const qty = location.search ? Number(location.search.split('=')[1]) : 1;
 
-  // console.log(match);
-  // console.log(location);
-  // console.log(history);
-  // const dispatch = useDispatch()
-  // const cart = useSelector(state => state.cart)
-  // const { cartItems } = cart
+  // const cart = useSelector((state) => state.cart);
+  // const { cartItems } = cart;
 
   // useEffect(() => {
-  //     if (productId) {
-  //         dispatch(addToCart(productId, qty))
-  //     }
-  // }, [dispatch, productId, qty])
+  //   if (productId) {
+  //     dispatch(addToCart(productId, qty));
+  //   }
+  // }, [dispatch, productId, qty]);
 
   // const removeFromCartHandler = (id) => {
   //     dispatch(removeFromCart(id))
@@ -67,7 +63,6 @@ const Cart = ({ match, location, history }) => {
 
   console.log(cart);
 
-  
   return (
     <Row>
       <Col md={9}>
@@ -131,9 +126,14 @@ const Cart = ({ match, location, history }) => {
                 </Row>
               </ListGroup.Item>
             ))}
+
+
           </ListGroup>
         )}
       </Col>
+
+
+      
       <Col md={3}>
         <Card>
           <ListGroup variant='flush'>
