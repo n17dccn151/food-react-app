@@ -148,7 +148,7 @@ const AntAdminListUser = () => {
 
           <Col span={12}>
             <Divider orientation='right'>
-              <Link to='/admin/userss/add'>
+              <Link to='/admin/users/add'>
                 <Button type='primary'>Add User</Button>
               </Link>
             </Divider>

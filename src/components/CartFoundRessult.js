@@ -3,27 +3,26 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Result, Button } from 'antd';
 import { logout } from '../actions/userActions.js';
-const AntError = ({ match, location, history }) => {
+import { SmileOutlined } from '@ant-design/icons';
+const CartFoundRessult = ({ match, location, history, test }) => {
   const dispatch = useDispatch();
 
   // useEffect(() => {
   //   dispatch(logout());
   // }, [dispatch]);
 
-  const checkLogout = () => {
-    dispatch(logout());
-    history.push('/login');
+  const goHome = () => {
+    history.push('/');
   };
 
   return (
-    <div style={{ margin: '50px auto' }}>
+    <div style={{ margin: '100px auto' }}>
       <Result
-        status='403'
-        title='403'
-        subTitle='Sorry, you are not authorized to access this page.'
+        icon={<SmileOutlined />}
+        title='Opps, Cart Found!'
         extra={
-          <Button type='primary' onClick={checkLogout}>
-            Login agian
+          <Button type='primary' onClick={goHome}>
+            Home
           </Button>
         }
       />
@@ -31,4 +30,4 @@ const AntError = ({ match, location, history }) => {
   );
 };
 
-export default AntError;
+export default CartFoundRessult;

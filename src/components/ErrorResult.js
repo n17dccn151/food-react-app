@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Result, Button } from 'antd';
 import { logout } from '../actions/userActions.js';
-const AntError = ({ match, location, history }) => {
+const ErrorResult = ({ match, location, history, test }) => {
   const dispatch = useDispatch();
 
   // useEffect(() => {
@@ -15,15 +15,15 @@ const AntError = ({ match, location, history }) => {
     history.push('/login');
   };
 
+  console.log(test);
   return (
-    <div style={{ margin: '50px auto' }}>
+    <div style={{ margin: '100px auto' }}>
       <Result
-        status='403'
-        title='403'
-        subTitle='Sorry, you are not authorized to access this page.'
+        status='warning'
+        title='There are some problems with your operation.'
         extra={
-          <Button type='primary' onClick={checkLogout}>
-            Login agian
+          <Button type='primary' key='console'>
+            Go Console
           </Button>
         }
       />
@@ -31,4 +31,4 @@ const AntError = ({ match, location, history }) => {
   );
 };
 
-export default AntError;
+export default ErrorResult;

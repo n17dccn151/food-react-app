@@ -1,11 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Row, Col, Button, Form } from 'react-bootstrap';
+// import { Row, Col, Button, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loading from '../components/Loading';
-import FormContainer from '../components/FormContainer';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
+// import FormContainer from '../components/FormContainer';
 import { login } from '../actions/userActions.js';
+import {
+  Form,
+  Input,
+  Button,
+  Checkbox,
+  Divider,
+  Space,
+  Row,
+  Col,
+  Typography,
+  Carousel,
+  message,
+} from 'antd';
+const { Title } = Typography;
+
+const DemoBox = (props) => (
+  <p className={`height-${props.value}`}>{props.children}</p>
+);
+const contentStyle = {
+  height: '160px',
+  color: '#fff',
+  lineHeight: '160px',
+  textAlign: 'center',
+  background: '#364d79',
+};
 
 const Login = ({ location, history }) => {
   const [email, setEmail] = useState('');
@@ -19,66 +45,100 @@ const Login = ({ location, history }) => {
   const redirect = location.search ? location.search.split('=')[1] : '/';
 
   useEffect(() => {
-    if (userInfo) {
-      history.push(redirect);
+    if (error) {
+      message.warning(error);
+    } else {
+      if (userInfo) {
+        message.success('Login success');
+        console.log('aaaaaaaaaa ' + userInfo.message);
+        history.push(redirect);
+      }
     }
-  }, [history, userInfo, redirect]);
+  }, [history, userInfo, redirect, error]);
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-    //DISPATCH LOGIN
-    dispatch(login(email, password));
+  const onFinish = (values) => {
+    // e.preventDefault();
+    dispatch(login(values.phone, values.password));
+    console.log('Success:', values);
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo);
   };
 
   return (
-    <FormContainer>
-      <h3>Sign In</h3>
-      {error && (
-        <h5>
-          <Message variant='danger'>{error}</Message>
-        </h5>
-      )}
-      {loading && (
-        <h5>
-          <Loading />
-        </h5>
-      )}
-      <Form onSubmit={submitHandler}>
-        <Form.Group controlId='email'>
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            type='phoneNumber'
-            placeholder='Enter email'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}></Form.Control>
-        </Form.Group>
-        <Form.Group controlId='password'>
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type='password'
-            placeholder='Enter password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}></Form.Control>
-        </Form.Group>
-        <div className='d-grid gap-2' style={{ marginTop: '16px' }}>
-          <Button type='submit' variant='primary'>
-            Sign In
-          </Button>
-        </div>
-      </Form>
+    <div style={{ padding: '50px 70px' }}>
+      <Row>
+        <Col span={10}>
+          <Form
+            name='normal_login'
+            className='login-form'
+            initialValues={{
+              remember: true,
+            }}
+            onFinish={onFinish}
+            style={{ padding: '0 100px' }}>
+            <Title
+              level={5}
+              style={{ justifyContent: 'center', display: 'flex' }}>
+              Login
+            </Title>
+            <Form.Item
+              name='phone'
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your Phone!',
+                },
+              ]}>
+              <Input
+                prefix={<UserOutlined className='site-form-item-icon' />}
+                type='number'
+                placeholder='Phone'
+              />
+            </Form.Item>
+            <Form.Item
+              name='password'
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your Password!',
+                },
+              ]}>
+              <Input
+                prefix={<LockOutlined className='site-form-item-icon' />}
+                type='password'
+                placeholder='Password'
+              />
+            </Form.Item>
 
-      <Row className='py-3'>
-        <Col>
-          New Customer?{' '}
-          <Link
-            className='text-decoration-none'
-            style={{ color: 'red' }}
-            to={redirect ? `/register?redirect=${redirect}` : '/register'}>
-            Register
-          </Link>
+            <Form.Item style={{ textAlign: 'center' }}>
+              <Space align='baseline'>
+                <Button type='primary' htmlType='submit'>
+                  Log in
+                </Button>
+              </Space>
+            </Form.Item>
+          </Form>
+        </Col>
+        <Col span={14}>
+          <Carousel autoplay>
+            <div>
+              <h3 style={contentStyle}>1</h3>
+            </div>
+            <div>
+              <h3 style={contentStyle}>2</h3>
+            </div>
+            <div>
+              <h3 style={contentStyle}>3</h3>
+            </div>
+            <div>
+              <h3 style={contentStyle}>4</h3>
+            </div>
+          </Carousel>
         </Col>
       </Row>
-    </FormContainer>
+    </div>
   );
 };
 

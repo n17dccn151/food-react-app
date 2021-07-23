@@ -1,10 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message.js';
-import Loading from '../components/Loading.js';
-import { addToCart } from '../actions/cartActions';
+import AntLoader from '../components/AntLoading.js';
+import { getUserDetailList } from '../actions/userActions.js';
 import { userCart } from '../actions/cartActions.js';
+import NumberFormat from 'react-number-format';
+import { createOrder } from '../actions/orderActions.js';
+import ErrorResult from '../components/ErrorResult.js';
+import SuccessResult from '../components/SuccessResult.js';
 import {
   Row,
   Col,
@@ -23,246 +27,203 @@ import {
   InputNumber,
   Checkbox,
   Affix,
-  Radio,
   Collapse,
+  Radio,
+  Divider,
+  Tag,
+  message,
 } from 'antd';
+import { ORDER_CREATE_RESET } from '../constants/orderConstants.js';
 const { TextArea } = Input;
 
-const { Title } = Typography;
-const { Meta } = Card;
+const { Title, Text, Link: LinkTy } = Typography;
 const { Panel } = Collapse;
 const AntOrder = ({ match, location, history }) => {
-  const productId = match.params.id;
-  const qty = location.search ? Number(location.search.split('=')[1]) : 1;
+  const [value, setValue] = useState();
+  const [checkedAddress, setCheckedAddress] = useState();
 
-  const [value, setValue] = React.useState(1);
-  // console.log(match);
-  // console.log(location);
-  // console.log(history);
-  // const dispatch = useDispatch()
-  // const cart = useSelector(state => state.cart)
-  // const { cartItems } = cart
+  const checkedList = JSON.parse(localStorage.getItem('checkedList'));
 
-  // useEffect(() => {
-  //     if (productId) {
-  //         dispatch(addToCart(productId, qty))
-  //     }
-  // }, [dispatch, productId, qty])
+  const orderCreate = useSelector((state) => state.orderCreate);
+  const {
+    order,
+    loading: loadingCreateOrder,
+    success,
+    error: errorCreate,
+  } = orderCreate;
 
-  // const removeFromCartHandler = (id) => {
-  //     dispatch(removeFromCart(id))
-  // }
+  const onChange1 = (e) => {
+    console.log('radio checked', e.target.value);
+    setValue(e.target.value);
+    setCheckedAddress(e.target.value);
+  };
 
-  // const checkoutHandler = () => {
-  //     history.push('/login?redirect=shipping')
-  // }
+  const dispatch1 = useDispatch();
+  const listUserDetail = useSelector((state) => state.userDetailList);
+  const {
+    loading: loadingDetails,
+    error: errorDetail,
+    details,
+  } = listUserDetail;
+
+  useEffect(() => {
+    if (success) {
+      console.log('jetsss');
+      // message.success('Added to cart');
+      dispatch({ type: ORDER_CREATE_RESET });
+    } else if (success === false) {
+      message.warning('This is a warning message');
+    }
+    dispatch1(getUserDetailList());
+  }, [dispatch1]);
+
+  function callback(key) {
+    console.log(key);
+  }
+
+  const handleSubmit = () => {
+    const orderFoods = { orderFoods: checkedList, detailId: checkedAddress.id };
+    dispatch1(createOrder(orderFoods));
+    console.log('submit', orderFoods);
+  };
 
   const dispatch = useDispatch();
   const cartDetail = useSelector((state) => state.cart);
   const { loading, error, cart } = cartDetail;
 
   useEffect(() => {
-    dispatch(userCart());
-  }, [dispatch]);
-
-  const dispatch1 = useDispatch();
-
-  useEffect(() => {
-    if (productId) {
-      dispatch1(addToCart(productId, qty));
+    if (!loading && !loadingDetails) {
+      if (details.length > 0) {
+        setCheckedAddress(details[0]);
+      }
     }
-  }, [dispatch1, productId, qty]);
+  }, [loading, loadingDetails]);
 
-  const checkoutHandler = () => {
-    history.push('/login?redirect=placeorder');
-  };
-
-  if (loading) {
-    return <Loading />;
+  if (loading || loadingDetails) {
+    return <AntLoader />;
   }
 
-  console.log(cart);
-  function onChange(value) {
-    console.log('changed', value);
-  }
-
-  const CheckboxGroup = Checkbox.Group;
-
-  const onChange1 = (e) => {
-    console.log('radio checked', e.target.value);
-    setValue(e.target.value);
-  };
-
-  function callback(key) {
-    console.log(key);
-  }
-
-  return (
+  return typeof checkedAddress === 'undefined' ? (
+    <></>
+  ) : success ? (
+    <SuccessResult test={order.orderId} />
+  ) : (
     <>
-      <Row style={({ margin: '0 auto' }, { padding: '35px' })}>
-        <Affix offsetTop={10}>
-          <Col span={4}>
-            <Row>
-              <Col>
-                <Title level={4}>h4. Ant Design</Title>
-              </Col>
-              <Col>
-                <Collapse onChange={callback}>
-                  <Panel header='choice' key='1'>
-                    <Radio.Group onChange={onChange1} value={value}>
-                      <Row>
-                        <Radio value={1}>A</Radio>
-                      </Row>
-                      <Row>
-                        <Radio value={2}>B</Radio>
-                      </Row>
-                      <Row>
-                        <Radio value={3}>C</Radio>
-                      </Row>
-                      <Row>
-                        <Radio value={4}>D</Radio>
-                      </Row>
-                    </Radio.Group>
-                  </Panel>
-                </Collapse>
-              </Col>
+      <Row style={{ margin: '16px' }}>
+        <Col span={6}>
+          <Affix offsetTop={10} style={{ margin: '0 auto' }}>
+            <Row style={{ margin: '16px' }}>
+              <Title level={4}>Address</Title>
             </Row>
-          </Col>
-        </Affix>
-        <Col span={10}>
-          <Row>
-            <Col>
-              <Row>
-                <Image
-                  width={100}
-                  src='https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
-                />
-              </Row>
-            </Col>
-            <Col>
-              <Title level={4}>h4. Ant Design</Title>
-            </Col>
-          </Row>
+
+            <Row style={{ margin: '16px' }}>
+              <Space direction='vertical'>
+                <Row>
+                  <Col span={12}>
+                    <Tag color='blue'>Name: </Tag>
+                  </Col>
+                  <Col span={12}>
+                    <Text>{checkedAddress.firstName} </Text>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={12}>
+                    <Tag color='blue'>Phone: </Tag>
+                  </Col>
+                  <Col span={12}>
+                    <Text>{checkedAddress.phone} </Text>
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col span={12}>
+                    <Tag color='blue'>Address: </Tag>
+                  </Col>
+                  <Col span={12}>
+                    <Text>{checkedAddress.address} </Text>
+                  </Col>
+                </Row>
+              </Space>
+            </Row>
+
+            <Collapse onChange={callback}>
+              <Panel header='Choice' key='1'>
+                <Radio.Group onChange={onChange1} value={checkedAddress}>
+                  {details.map((item) => (
+                    <Row>
+                      <Radio value={item}>
+                        <Space direction='vertical'>
+                          <Text>{item.firstName} </Text>
+                          <Text>{item.phone} </Text>
+                          <Text>{item.address} </Text>
+                        </Space>
+                        <Divider></Divider>
+                      </Radio>
+                    </Row>
+                  ))}
+                </Radio.Group>
+              </Panel>
+            </Collapse>
+          </Affix>
         </Col>
-        <Affix offsetTop={10}>
-          <Col span={6}>
+
+        <Col span={14}>
+          <Row style={{ margin: '16px' }}>
+            <Title level={4}>List Product</Title>
+          </Row>
+          {checkedList.map((item) => (
+            <Row style={{ margin: '16px' }}>
+              <Col span={12}>
+                <Row>
+                  <Image width={200} src={item.image} />
+                </Row>
+              </Col>
+              <Col span={12}>
+                <Title level={4}>{item.name}</Title>
+
+                <NumberFormat
+                  style={{ color: '#0050b3' }}
+                  value={item.price}
+                  displayType={'text'}
+                  thousandSeparator={true}
+                  prefix={'$ '}
+                />
+
+                <Row style={{ marginTop: '16px' }}>{item.amount}</Row>
+              </Col>
+            </Row>
+          ))}
+        </Col>
+
+        <Col span={4}>
+          <Affix offsetTop={10} style={{ margin: '0 auto' }}>
             <Row>
-              <Title level={4}>h4. Ant Design</Title>
+              <Title level={4}>Total Price</Title>
             </Row>
             <Row>
-              <InputNumber
-                min={1}
-                max={10}
-                defaultValue={3}
-                onChange={onChange}
+              <NumberFormat
+                style={{ color: '#0050b3' }}
+                value={checkedList.reduce(
+                  (acc, item) => acc + item.amount * item.price,
+                  0
+                )}
+                displayType={'text'}
+                thousandSeparator={true}
+                prefix={'$ '}
               />
             </Row>
             <Row>
-              <Col>
-                <Button type='primary'>Primary Button</Button>
+              <Col style={{ marginTop: '16px' }}>
+                <Button type='primary' onClick={handleSubmit}>
+                  Order
+                </Button>
               </Col>
               <Col></Col>
             </Row>
-          </Col>
-        </Affix>
+          </Affix>
+        </Col>
       </Row>
     </>
-
-    // <Row>
-    //   <Col md={9}>
-    //     <h4>
-    //       <strong>Shopping Cart</strong>
-    //     </h4>
-    //     {cart.cartFoods.length === 0 ? (
-    //       <Message variant='info'>
-    //         Your cart is empty{' '}
-    //         <span className='font-weight-bold text-uppercase'>
-    //           <Link to='/' className='text-decoration-none'>
-    //             Back to home
-    //           </Link>
-    //         </span>
-    //       </Message>
-    //     ) : (
-    //       <ListGroup variant='flush'>
-    //         {cart.cartFoods.map((item) => (
-    //           <ListGroup.Item key={item.id}>
-    //             <Row>
-    //               <Col md={3}>
-    //                 <Image
-    //                   src={item.image}
-    //                   alt={item.name}
-    //                   fluid
-    //                   rounded></Image>
-    //               </Col>
-    //               <Col md={3} style={{ margin: 'auto' }}>
-    //                 <Link
-    //                   className='text-decoration-none'
-    //                   to={`product/${item.id}`}>
-    //                   {item.name}
-    //                 </Link>
-    //               </Col>
-    //               <Col md={2} style={{ margin: 'auto' }}>
-    //                 ${item.price}
-    //               </Col>
-    //               <Col md={2} style={{ margin: 'auto' }}>
-    //                 {item.amount}
-    //                 <Form.Control
-    //                   as='select'
-    //                   value={item.amount}
-    //                   // onChange={(e) =>
-    //                   //   dispatch(
-    //                   //     addToCart(item.product, Number(e.target.value))
-    //                   //   )
-    //                   // }
-    //                 >
-    //                   {[...Array(item.countInStock).keys()].map((x) => (
-    //                     <option key={x + 1} value={x + 1}>
-    //                       {x + 1}
-    //                     </option>
-    //                   ))}
-    //                 </Form.Control>
-    //               </Col>
-    //               <Col md={2} style={{ margin: 'auto' }}>
-    //                 {/* <Button type="button" variant="light" onClick={() => removeFromCartHandler(item.product)}>
-    //                                                 <i class="fas fa-trash"></i>
-    //                                             </Button> */}
-    //               </Col>
-    //             </Row>
-    //           </ListGroup.Item>
-    //         ))}
-    //       </ListGroup>
-    //     )}
-    //   </Col>
-    //   <Col md={3}>
-    //     <Card>
-    //       <ListGroup variant='flush'>
-    //         <ListGroup.Item>
-    //           <h4>
-    //             Subtotal (
-    //             {cart.cartFoods.reduce((acc, item) => acc + item.amount, 0)})
-    //             items
-    //           </h4>
-    //           $
-    //           {cart.cartFoods.reduce(
-    //             (acc, item) => acc + item.amount * item.price,
-    //             0
-    //           )}
-    //         </ListGroup.Item>
-    //         <ListGroup.Item>
-    //           <div className='d-grid gap-2'>
-    //             <Button
-    //               onClick={checkoutHandler}
-    //               type='submit'
-    //               variant='primary'
-    //               disabled={cart.cartFoods.length === 0}>
-    //               Proceed To Checkout
-    //             </Button>
-    //           </div>
-    //         </ListGroup.Item>
-    //       </ListGroup>
-    //     </Card>
-    //   </Col>
-    // </Row>
   );
 };
 

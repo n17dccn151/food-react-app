@@ -1,18 +1,14 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 
 //import page
 import Home from './pages/Home';
-import About from './pages/About';
-import ProductDetail from './pages/ProductDetail';
-import Error from './pages/Error';
-import Cart from './pages/Cart';
+
 import Login from './pages/Login';
-import PlaceOrder from './pages/PlaceOrder';
-import Order from './pages/Order';
+
 import OrderDetail from './pages/OrderDetail';
 
 import AdminListProducts from './pages/AdminListProducts';
@@ -33,70 +29,164 @@ import AntAdminListUser from './pages/AntAdminListUser';
 import AntProductDetail from './pages/AntProductDetail';
 import AntCart from './pages/AntCart';
 import AntOrder from './pages/AntOrder';
-
-//import component
-import Navbar from './components/Navbar';
-import Header from './components/Header';
-import { Table, Button, Space, Layout, Menu, Breadcrumb } from 'antd';
+import AntError from './components/AntError';
+import Logout from './components/Logout';
+import { Layout } from 'antd';
+import NotFound from './components/NotFound';
+import AntOrderInfo from './pages/AntOrderInfo';
 
 function App() {
+  const userLogin = useSelector((state) => state.userLogin);
+  const { loading, error, userInfo } = userLogin;
+
+  let isUser;
+  let isAdmin;
+  if (userInfo) {
+    isUser = userInfo.roles
+      .map(function (e) {
+        return e;
+      })
+      .indexOf('ROLE_USER');
+
+    isAdmin = userInfo.roles
+      .map(function (e) {
+        return e;
+      })
+      .indexOf('ROLE_ADMIN');
+  }
+
+  console.log('ussss', isUser, isAdmin, userInfo);
   return (
     <Router>
-      {/* <Navbar /> */}
-      {/* <Header /> */}
-      {/* <main className='py-3'> */}
+      <div className='App'>
+        <Layout style={{ minHeight: '100vh' }}>
+          <Admin />
+          <Layout className='site-layout'>
+            <Switch>
+              <Route
+                exact
+                path='/admin/products'
+                component={
+                  isAdmin > -1
+                    ? AntdAdminListProducts
+                    : isUser > -1
+                    ? AntError
+                    : Login
+                }
+              />
+              <Route
+                exact
+                path='/admin/products/add'
+                component={
+                  isAdmin > -1
+                    ? AntAdminProductAdd
+                    : isUser > -1
+                    ? AntError
+                    : Login
+                }
+              />
+              <Route
+                exact
+                path='/admin/products/:id/edit'
+                component={
+                  isAdmin > -1
+                    ? AntAdminProductEdit
+                    : isUser > -1
+                    ? AntError
+                    : Login
+                }
+              />
+              <Route
+                exact
+                path='/admin/category'
+                component={
+                  isAdmin > -1
+                    ? AntAdminListCategory
+                    : isUser > -1
+                    ? AntError
+                    : Login
+                }
+              />
 
-      <Layout style={{ minHeight: '100vh' }}>
-        <Admin />
-        <Layout className='site-layout'>
-          <Route
-            exact
-            path='/admin/productss'
-            component={AntdAdminListProducts}
-          />
-          <Route path='/admin/productss/add' component={AntAdminProductAdd} />
-          <Route
-            path='/admin/productss/:id/edit'
-            component={AntAdminProductEdit}
-          />
-          <Route
-            exact
-            path='/admin/categoryy'
-            component={AntAdminListCategory}
-          />
-          <Route path='/admin/categoryy/add' component={AntAdminCategoryAdd} />
-          <Route
-            path='/admin/categoryy/:id/edit'
-            component={AntAdminCategoryEdit}
-          />
-          <Route exact path='/admin/orderss' component={AntAdminListOrders} />
-          <Route exact path='/admin/userss' component={AntAdminListUser} />
+              <Route
+                exact
+                path='/admin/category/add'
+                component={
+                  isAdmin > -1
+                    ? AntAdminCategoryAdd
+                    : isUser > -1
+                    ? AntError
+                    : Login
+                }
+              />
+              <Route
+                path='/admin/category/:id/edit'
+                component={
+                  isAdmin > -1
+                    ? AntAdminCategoryEdit
+                    : isUser > -1
+                    ? AntError
+                    : Login
+                }
+              />
+              <Route
+                exact
+                path='/admin/orders'
+                component={
+                  isAdmin > -1
+                    ? AntAdminListOrders
+                    : isUser > -1
+                    ? AntError
+                    : Login
+                }
+              />
+              <Route
+                exact
+                path='/admin/users'
+                component={
+                  isAdmin > -1
+                    ? AntAdminListUser
+                    : isUser > -1
+                    ? AntError
+                    : Login
+                }
+              />
 
-          <Route path='/productss/:id' component={AntProductDetail} />
-          <Route path='/cartt/:id?' component={AntCart} />
+              <Route exact path='/products/:id' component={AntProductDetail} />
+              <Route
+                exact
+                path='/cart/:id?'
+                component={
+                  isUser > -1 ? AntCart : isAdmin > -1 ? AntError : Login
+                }
+              />
+              <Route
+                exact
+                path='/orders'
+                component={
+                  isUser > -1 ? AntOrder : isAdmin > -1 ? AntError : Login
+                }
+              />
 
-          {/*  */}
+              <Route path='/logout' component={Logout} />
+              {/*  */}
 
-          <Route exact path='/' component={Home} />
+              <Route exact path='/' component={Home} />
 
-          <Route path='/login' component={Login} />
-          <Route path='/placeorder' component={PlaceOrder} />
-          <Route path='/about' component={About} />
-          <Route path='/products/:id' component={ProductDetail} />
-          <Route path='/cart/:id?' component={Cart} />
-          <Route exact path='/orders' component={Order} />
-          <Route path='/orders/:id' component={OrderDetail} />
-          <Route exact path='/admin/products' component={AdminListProducts} />
+              <Route path='/login' component={Login} />
 
-          <Route path='/admin/products/:id/edit' component={AdminProductEdit} />
+              <Route
+                path='/myorder'
+                component={
+                  isUser > -1 ? AntOrderInfo : isAdmin > -1 ? AntError : Login
+                }
+              />
 
-          <Route exact path='/admin/users' component={AdminListUsers} />
-          <Route path='/admin/users/:id/edit' component={AdminUserEdit} />
-
-          <Route exact path='/admin/orders' component={AdminListOrders} />
-          {/* <Route path='*' component={Error} /> */}
+              <Route path='*' component={NotFound} />
+            </Switch>
+          </Layout>
         </Layout>
-      </Layout>
+      </div>
 
       <Container>
         <Switch>

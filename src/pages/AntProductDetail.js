@@ -4,6 +4,9 @@ import Loading from '../components/Loading';
 import { Link } from 'react-router-dom';
 import { getProductDetails } from '../actions/productActions.js';
 import NumberFormat from 'react-number-format';
+import AntLoader from '../components/AntLoading';
+import { addToCart } from '../actions/cartActions';
+import AntError from '../components/AntError';
 import {
   Row,
   Col,
@@ -15,7 +18,9 @@ import {
   Rate,
   InputNumber,
   Space,
+  message,
 } from 'antd';
+import { CART_ADD_ITEM_RESET } from '../constants/cartConstants';
 const { Title, Paragraph, Text, Link: LinkTy } = Typography;
 const { TextArea } = Input;
 
@@ -25,24 +30,38 @@ const AntProductDetail = ({ match, history }) => {
   const productDetails = useSelector((state) => state.productDetails);
   const { loading, error, product } = productDetails;
   const [qty, setQty] = useState(1);
+  const cartCreate = useSelector((state) => state.cartCreate);
+  const {
+    cart,
+    loading: loadingCreateCart,
+    success,
+    error: errorCreate,
+  } = cartCreate;
+
   const [comment, setComment] = useState({
     comments: [],
     submitting: false,
     value: '',
   });
-  useEffect(() => {
-    dispatch(getProductDetails(match.params.id));
-  }, [dispatch, match]);
-
-  console.log(product);
 
   const addToCartHandler = () => {
-    history.push(`/cartt/${match.params.id}?qty=${qty}`);
+    dispatch(addToCart(match.params.id, qty));
+    // history.push(`/cartt/${match.params.id}?qty=${qty}`);
   };
-
-  if (loading) {
-    return <Loading />;
-  }
+  console.log(success);
+  useEffect(() => {
+    console.log('jetdddssszz');
+    if (success) {
+      console.log('jetsss');
+      message.success('Added to cart');
+      dispatch({ type: CART_ADD_ITEM_RESET });
+    } else if (success === false) {
+      message.warning(errorCreate);
+      dispatch({ type: CART_ADD_ITEM_RESET });
+    }
+    // dispatch({ type: CART_ADD_ITEM_RESET });
+    dispatch(getProductDetails(match.params.id));
+  }, [dispatch, match, success]);
 
   // console.log({ ...product.images }[0].url, ' ', match, '  ', history);
 
@@ -66,8 +85,11 @@ const AntProductDetail = ({ match, history }) => {
     </>
   );
 
+  // !loading ? <AntLoader />:
   return loading ? (
-    <></>
+    <AntLoader />
+  ) : errorCreate ? (
+    <AntError test={errorCreate} />
   ) : (
     <>
       <Row justify='space-around' align='middle'>
@@ -89,7 +111,11 @@ const AntProductDetail = ({ match, history }) => {
               prefix={'$ '}
             />
           </Title>
-          <Rate allowHalf disabled defaultValue={product.rate} />
+          <Rate
+            allowHalf
+            disabled
+            defaultValue={product.rate === 0 ? 1 : product.rate}
+          />
           <Row style={{ marginTop: '16px' }}>
             <InputNumber
               min={1}
@@ -104,13 +130,10 @@ const AntProductDetail = ({ match, history }) => {
                 Add to cart
               </Button>
             </Col>
-            <Col style={{ margin: '16px' }}>
-              <Button type='primary'>Order now</Button>
-            </Col>
+            <Col style={{ margin: '16px' }}></Col>
           </Row>
         </Col>
       </Row>
-
       <Space style={{ margin: '32px' }}>
         <Typography>
           <Title style={{ fontSize: '20px' }}>Description</Title>

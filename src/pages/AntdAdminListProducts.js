@@ -174,7 +174,7 @@ const AntdAdminListProducts = ({ history, match }) => {
 
             <Col span={12}>
               <Divider orientation='right'>
-                <Link to='/admin/productss/add'>
+                <Link to='/admin/products/add'>
                   <Button type='primary'>Add Product</Button>
                 </Link>
               </Divider>

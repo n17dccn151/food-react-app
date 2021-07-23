@@ -24,6 +24,10 @@ import {
   USER_UPDATE_REQUEST,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAIL,
+  USER_LIST_DETAILS_REQUEST,
+  USER_LIST_DETAILS_SUCCESS,
+  USER_LIST_DETAILS_FAIL,
+  USER_LIST_DETAILS_RESET,
 } from '../constants/userConstants.js';
 
 import { ORDER_MY_LIST_RESET } from '../constants/orderConstants';
@@ -205,6 +209,40 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: USER_UPDATE_PROFILE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const getUserDetailList = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_LIST_DETAILS_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.accessToken}`,
+      },
+    };
+
+    const { data } = await API.get(`customers/details/`, config);
+
+    dispatch({
+      type: USER_LIST_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_LIST_DETAILS_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

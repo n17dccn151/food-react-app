@@ -1,7 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Layout, Menu, Input, Divider, Space, Col, Row, Image } from 'antd';
+import {
+  Layout,
+  Menu,
+  Input,
+  Divider,
+  Space,
+  Col,
+  Row,
+  Image,
+  Badge,
+} from 'antd';
 import { withRouter } from 'react-router';
 import logo from '../logo.svg';
 import {
@@ -14,9 +25,10 @@ import {
   BarsOutlined,
   ShoppingOutlined,
   BellOutlined,
+  LoginOutlined,
 } from '@ant-design/icons';
 import 'antd/dist/antd.css';
-// import { Row } from 'react-bootstrap';
+
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 const { Search } = Input;
@@ -30,6 +42,10 @@ const Admin = ({ history, match }) => {
   const { Search } = Input;
   const { location } = history;
 
+  const userLogin = useSelector((state) => state.userLogin);
+
+  console.log('aaaaaaaa', userLogin);
+
   return location.pathname.split('/')[1] === 'admin' ? (
     <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
       <div className='logo'>
@@ -39,27 +55,27 @@ const Admin = ({ history, match }) => {
         theme='dark'
         defaultSelectedKeys={[`${location.pathname.split('/')[2]}`]}
         mode='inline'>
-        <Menu.Item key='dashboardd' icon={<PieChartOutlined />}>
+        <Menu.Item key='dashboard' icon={<PieChartOutlined />}>
           Dashboald
-          <Link to='/admin/dashboardd' />
+          <Link to='/admin/dashboard' />
         </Menu.Item>
 
         <Menu.Item key='categoryy' icon={<BarsOutlined />}>
           Category
-          <Link to='/admin/categoryy' />
+          <Link to='/admin/category' />
         </Menu.Item>
-        <Menu.Item key='productss' icon={<ShopOutlined />}>
+        <Menu.Item key='products' icon={<ShopOutlined />}>
           Product
-          <Link to='/admin/productss' />
+          <Link to='/admin/products' />
         </Menu.Item>
 
-        <Menu.Item key='orderss' icon={<ShoppingOutlined />}>
+        <Menu.Item key='orders' icon={<ShoppingOutlined />}>
           Order
-          <Link to='/admin/orderss' />
+          <Link to='/admin/orders' />
         </Menu.Item>
         <Menu.Item key='userss' icon={<TeamOutlined />}>
           Customer
-          <Link to='/admin/userss' />
+          <Link to='/admin/users' />
         </Menu.Item>
         <Menu.Item key='6' icon={<DesktopOutlined />}>
           Admin
@@ -97,26 +113,47 @@ const Admin = ({ history, match }) => {
             enterButton
           />
         </Col>
-
         <Col span={4}></Col>
-        <Col span={8}>
-          <Menu theme='dark' mode='horizontal'>
-            <Menu.Item key='cart' icon={<ShoppingOutlined />}>
-              <Link to='/cartt' />
-            </Menu.Item>
-            <Menu.Item key='noti' icon={<BellOutlined />}>
-              <Link to='/cartt' />
-            </Menu.Item>
-            {/* <Menu.Item key='account' icon={<UserOutlined />}>
+        {userLogin.userInfo != null ? (
+          <>
+            <Col span={8}>
+              <Menu theme='dark' mode='horizontal'>
+                <Menu.Item key='cart' icon={<ShoppingOutlined />}>
+                  <Link to='/cart' />
+                  <Badge count={99} size='small'></Badge>
+                </Menu.Item>
+
+                <Menu.Item key='noti' icon={<BellOutlined />}>
+                  <Link to='/cart' />
+                </Menu.Item>
+                {/* <Menu.Item key='account' icon={<UserOutlined />}>
               <Link to='/cartt' />
             </Menu.Item> */}
-            <SubMenu key='account' icon={<UserOutlined />}>
-              <Menu.Item key='3'>Order Info</Menu.Item>
-              <Menu.Item key='4'>User Info</Menu.Item>
-              <Menu.Item key='5'>Logout</Menu.Item>
-            </SubMenu>
-          </Menu>
-        </Col>
+                <SubMenu key='account' icon={<UserOutlined />}>
+                  <Menu.Item key='3'>
+                    My Order
+                    <Link to='/myorder' />
+                  </Menu.Item>
+                  <Menu.Item key='4'>User Info</Menu.Item>
+                  <Menu.Item key='5'>
+                    Logout
+                    <Link to='/logout' />
+                  </Menu.Item>
+                </SubMenu>
+              </Menu>
+            </Col>
+          </>
+        ) : (
+          <>
+            <Col span={8}>
+              <Menu theme='dark' mode='horizontal'>
+                <Menu.Item key='login' icon={<LoginOutlined />} title='Login'>
+                  <Link to='/login' />
+                </Menu.Item>
+              </Menu>
+            </Col>
+          </>
+        )}
       </Row>
     </Header>
   );

@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
-import { getListOrder } from '../actions/orderActions.js';
+import { getMyListOrder } from '../actions/orderActions.js';
 import NumberFormat from 'react-number-format';
 import { getFullDate } from '../helper/getFullDate.js';
+
 import {
   Image,
   Table,
@@ -23,13 +24,13 @@ import { Link } from 'react-router-dom';
 const { Content } = Layout;
 const { SubMenu } = Menu;
 
-const AntAdminListOrders = () => {
+const AntOrderInfo = () => {
   const dispatch = useDispatch();
-  const orderList = useSelector((state) => state.orderList);
-  const { loading, error, orders } = orderList;
+  const orderMyList = useSelector((state) => state.orderMyList);
+  const { loading, error, orders } = orderMyList;
   const [id, setId] = useState();
   useEffect(() => {
-    dispatch(getListOrder());
+    dispatch(getMyListOrder());
   }, [dispatch]);
 
   console.log(orders);
@@ -44,6 +45,12 @@ const AntAdminListOrders = () => {
   //   if (loading === false) {
   //     message.success({ content: 'Loaded!', key, duration: 2 });
   //   }
+
+  // const getFullDate = (date) => {
+  //   const dateAndTime = date.split('T');
+
+  //   return dateAndTime[0].split('-').reverse().join('-');
+  // };
 
   const expandedRow = (row) => {
     console.log(row.orderFoods);
@@ -65,6 +72,14 @@ const AntAdminListOrders = () => {
         title: 'Price',
         dataIndex: 'price',
         key: 'priceFood',
+        render: (priceFood) => (
+          <NumberFormat
+            value={priceFood}
+            displayType={'text'}
+            thousandSeparator={true}
+            prefix={'$ '}
+          />
+        ),
       },
       //   {
       //     title: 'Action',
@@ -95,13 +110,19 @@ const AntAdminListOrders = () => {
   };
 
   const columns = [
-    // {
-    //   title: 'ID',
-    //   dataIndex: 'orderId',
-    //   key: 'orderId',
-    //   // render: (text) => <a>{text}</a>,
-    // },
-
+    //   {
+    //     title: 'Image',
+    //     dataIndex: 'image',
+    //     render: (image) => (
+    //       <Image width={150} alt={image} src={image} preview={{}} />
+    //     ),
+    //   },
+    {
+      title: 'ID',
+      dataIndex: 'orderId',
+      key: 'orderId',
+      // render: (text) => <a>{text}</a>,
+    },
     {
       title: 'Phone',
       dataIndex: ['userDetailDto', 'phone'],
@@ -149,7 +170,6 @@ const AntAdminListOrders = () => {
         //   </Popconfirm>
         null,
     },
-
     {
       title: 'CreatedDate',
       dataIndex: 'createdDate',
@@ -178,22 +198,6 @@ const AntAdminListOrders = () => {
           </Tag>
         );
       },
-    },
-
-    {
-      title: 'Action',
-      dataIndex: '',
-      key: 'x',
-      render: (_, record) =>
-        orders.length >= 1 ? (
-          <Popconfirm
-            title='Sure to delete?'
-
-            // onConfirm={() => this.handleDelete(record.key)}
-          >
-            <a>action</a>
-          </Popconfirm>
-        ) : null,
     },
   ];
 
@@ -255,4 +259,4 @@ const AntAdminListOrders = () => {
   );
 };
 
-export default AntAdminListOrders;
+export default AntOrderInfo;

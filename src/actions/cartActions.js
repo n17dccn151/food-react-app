@@ -4,9 +4,12 @@ import {
   CART_FAIL,
   CART_RESET,
   CART_ADD_ITEM,
+  CART_ADD_ITEM_FAIL,
+  CART_ADD_ITEM_SUCCES,
+  CART_ADD_ITEM_REQUEST,
 } from '../constants/cartConstants.js';
 
-import axios from 'axios';
+import API from '../api';
 
 export const userCart = () => async (dispatch, getState) => {
   try {
@@ -27,10 +30,7 @@ export const userCart = () => async (dispatch, getState) => {
     // headers.append('Access-Control-Allow-Origin', 'http://localhost:3002');
     // headers.append('Access-Control-Allow-Credentials', 'true');
 
-    const { data } = await axios.get(
-      'http://localhost:8080/api/customers/cart',
-      config
-    );
+    const { data } = await API.get('customers/cart', config);
     //console.log(data);
 
     dispatch({
@@ -49,31 +49,41 @@ export const userCart = () => async (dispatch, getState) => {
 };
 
 export const addToCart = (id, qty) => async (dispatch, getState) => {
-  const cartFood = {
-    id: Number(id),
-    amount: qty,
-  };
+  try {
+    const cartFood = {
+      id: Number(id),
+      amount: qty,
+    };
 
-  const {
-    userLogin: { userInfo },
-  } = getState();
+    dispatch({
+      type: CART_ADD_ITEM_REQUEST,
+    });
 
-  console.log(cartFood);
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      Authorization: `Bearer ${userInfo.accessToken}`,
-    },
-  };
-  const { data } = await axios.post(
-    `http://localhost:8080/api/customers/cart`,
-    cartFood,
-    config
-  );
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-  dispatch({
-    type: CART_ADD_ITEM,
-    payload: data,
-  });
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${userInfo.accessToken}`,
+      },
+    };
+
+    const { data } = await API.post(`customers/cart`, cartFood, config);
+
+    dispatch({
+      type: CART_ADD_ITEM_SUCCES,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: CART_ADD_ITEM_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
 };

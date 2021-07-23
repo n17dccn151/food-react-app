@@ -4,6 +4,7 @@ import Loading from './Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../actions/productActions.js';
 import { Layout, Row, Divider, Space, Col, Pagination } from 'antd';
+import AntLoader from '../components/AntLoading';
 const AntProductList = () => {
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.productList);
@@ -14,10 +15,6 @@ const AntProductList = () => {
   }, [dispatch]);
 
   //const { foods, loading } = useGlobalContext();
-
-  if (loading) {
-    return <Loading />;
-  }
 
   const pageSize = 10;
   const getData = (current, pageSize) => {
@@ -36,7 +33,9 @@ const AntProductList = () => {
     );
   };
 
-  return (
+  return loading ? (
+    <AntLoader />
+  ) : (
     // <Layout className='site-layout'>
     <Content style={{ margin: '0 16px' }}>
       <Divider>
@@ -51,8 +50,8 @@ const AntProductList = () => {
         <Pagination defaultCurrent={1} total={500} />
       </Divider>
     </Content>
-    // </Layout>
   );
+  // </Layout>
 };
 
 export default AntProductList;

@@ -13,12 +13,13 @@ import {
   categoryUpdateReducer,
 } from './reducers/categoryReducers.js';
 
-import { cartReducer } from './reducers/cartReducers.js';
+import { cartReducer, cartCreateReducer } from './reducers/cartReducers.js';
 import {
   userLoginReducer,
   userListReducer,
   userDetailsReducer,
   userUpdateReducer,
+  userListDetailReducer,
 } from './reducers/userReducers.js';
 
 import { imageCreateReducer } from './reducers/imageReducer.js';
@@ -27,6 +28,7 @@ import {
   orderMyListReducer,
   orderDetailsReducer,
   orderListReducer,
+  orderCreateReducer,
 } from './reducers/orderReducers.js';
 
 const reducer = combineReducers({
@@ -39,14 +41,16 @@ const reducer = combineReducers({
   productUpdate: productUpdateReducer,
 
   cart: cartReducer,
+  cartCreate: cartCreateReducer,
   userLogin: userLoginReducer,
   userList: userListReducer,
   userDetails: userDetailsReducer,
   userUpdate: userUpdateReducer,
-
+  userDetailList: userListDetailReducer,
   orderMyList: orderMyListReducer,
   orderDetails: orderDetailsReducer,
   orderList: orderListReducer,
+  orderCreate: orderCreateReducer,
 
   imageProduct: imageCreateReducer,
 });
@@ -77,6 +81,16 @@ const initialState = {
   },
 
   orderDetails: {
+    loading: true,
+  },
+  userDetailList: {
+    loading: true,
+  },
+  orderCreate: {
+    loading: true,
+  },
+
+  cartCreate: {
     loading: true,
   },
 };

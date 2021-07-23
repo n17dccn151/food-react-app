@@ -18,9 +18,9 @@ const AntProduct = ({
   price,
 }) => {
   return (
-    <Link to={`/productss/${foodId}`}>
+    <Link to={`/products/${foodId}`}>
       <Col span={8}>
-        <Badge.Ribbon text='Hot'>
+        <Badge.Ribbon text='Hot' color='cyan'>
           <Card
             hoverable
             style={{ width: 240 }}

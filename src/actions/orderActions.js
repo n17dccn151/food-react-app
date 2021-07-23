@@ -36,12 +36,7 @@ export const createOrder = (order) => async (dispatch, getState) => {
       },
     };
 
-    const params = new URLSearchParams({
-      all: true,
-    }).toString();
-
-    const all = true;
-    const { data } = await API.post('customers/orders?' + params, null, config);
+    const { data } = await API.post('customers/orders', order, config);
 
     dispatch({
       type: ORDER_CREATE_SUCCESS,

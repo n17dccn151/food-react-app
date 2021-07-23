@@ -1,8 +1,18 @@
 import React from 'react';
-import { Spin } from 'antd';
-
+import { Spin, Alert, Layout } from 'antd';
+const { Content } = Layout;
 const AntLoader = () => {
-  return <Spin size='large' />;
+  return (
+    <div style={{ margin: '100px auto' }}>
+      <Spin tip='Loading...'>
+        <Alert
+          message='Alert message title'
+          description='Further details about the context of this alert.'
+          type='info'
+        />
+      </Spin>
+    </div>
+  );
 };
 
 export default AntLoader;

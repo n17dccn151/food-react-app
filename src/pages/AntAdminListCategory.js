@@ -115,7 +115,7 @@ const AntAdminListCategory = () => {
 
             <Col span={12}>
               <Divider orientation='right'>
-                <Link to='/admin/categoryy/add'>
+                <Link to='/admin/category/add'>
                   <Button type='primary'>Add Category</Button>
                 </Link>
               </Divider>
