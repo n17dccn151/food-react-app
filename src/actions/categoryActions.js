@@ -2,6 +2,19 @@ import {
   CATEGORY_LIST_FAIL,
   CATEGORY_LIST_REQUEST,
   CATEGORY_LIST_SUCCESS,
+  CATEGORY_CREATE_REQUEST,
+  CATEGORY_CREATE_SUCCESS,
+  CATEGORY_CREATE_FAIL,
+  CATEGORY_DELETE_REQUEST,
+  CATEGORY_DELETE_SUCCESS,
+  CATEGORY_DELETE_FAIL,
+  CATEGORY_UPDATE_REQUEST,
+  CATEGORY_UPDATE_SUCCESS,
+  CATEGORY_UPDATE_FAIL,
+  CATEGORY_UPDATE_RESET,
+  CATEGORY_DETAILS_REQUEST,
+  CATEGORY_DETAILS_SUCCESS,
+  CATEGORY_DETAILS_FAIL,
 } from '../constants/categoryConstants.js';
 import API from '../api';
 
@@ -27,16 +40,16 @@ export const listCategories = () => async (dispatch) => {
 
 export const getCategoryDetails = (id) => async (dispatch) => {
   try {
-    dispatch({ type: CATEGORY_LIST_REQUEST });
+    dispatch({ type: CATEGORY_DETAILS_REQUEST });
     const { data } = await API.get(`categories/${id}`);
 
     dispatch({
-      type: CATEGORY_LIST_SUCCESS,
+      type: CATEGORY_DETAILS_SUCCESS,
       payload: data,
     });
   } catch (error) {
     dispatch({
-      type: CATEGORY_LIST_FAIL,
+      type: CATEGORY_DETAILS_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
@@ -48,7 +61,7 @@ export const getCategoryDetails = (id) => async (dispatch) => {
 export const deleteCategory = (id) => async (dispatch, getState) => {
   try {
     dispatch({
-      type: CATEGORY_LIST_REQUEST,
+      type: CATEGORY_DELETE_REQUEST,
     });
 
     const {
@@ -65,11 +78,11 @@ export const deleteCategory = (id) => async (dispatch, getState) => {
     await API.delete(`categories/${id}`, config);
 
     dispatch({
-      type: CATEGORY_LIST_SUCCESS,
+      type: CATEGORY_DELETE_SUCCESS,
     });
   } catch (error) {
     dispatch({
-      type: CATEGORY_LIST_FAIL,
+      type: CATEGORY_DELETE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
@@ -81,7 +94,7 @@ export const deleteCategory = (id) => async (dispatch, getState) => {
 export const createCategory = (category) => async (dispatch, getState) => {
   try {
     dispatch({
-      type: CATEGORY_LIST_REQUEST,
+      type: CATEGORY_CREATE_REQUEST,
     });
 
     const {
@@ -99,12 +112,12 @@ export const createCategory = (category) => async (dispatch, getState) => {
     const { data } = await API.post(`categories`, category, config);
 
     dispatch({
-      type: CATEGORY_LIST_SUCCESS,
+      type: CATEGORY_CREATE_SUCCESS,
       payload: data,
     });
   } catch (error) {
     dispatch({
-      type: CATEGORY_LIST_FAIL,
+      type: CATEGORY_CREATE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
@@ -113,10 +126,10 @@ export const createCategory = (category) => async (dispatch, getState) => {
   }
 };
 
-export const updateCategory = (category) => async (dispatch, getState) => {
+export const updateCategory = (id, category) => async (dispatch, getState) => {
   try {
     dispatch({
-      type: CATEGORY_LIST_REQUEST,
+      type: CATEGORY_UPDATE_REQUEST,
     });
 
     const {
@@ -131,19 +144,15 @@ export const updateCategory = (category) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await API.put(
-      `categories/${category._id}`,
-      category,
-      config
-    );
+    const { data } = await API.put(`categories/${id}`, category, config);
 
     dispatch({
-      type: CATEGORY_LIST_SUCCESS,
+      type: CATEGORY_UPDATE_SUCCESS,
       payload: data,
     });
   } catch (error) {
     dispatch({
-      type: CATEGORY_LIST_FAIL,
+      type: CATEGORY_UPDATE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

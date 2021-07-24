@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
-import { listCategories } from '../actions/categoryActions.js';
-
+import { listCategories, deleteCategory } from '../actions/categoryActions.js';
+import { CATEGORY_DELETE_RESET } from '../constants/categoryConstants';
 import {
   Image,
   Table,
@@ -31,20 +31,41 @@ const AntAdminListCategory = () => {
     categories,
   } = categoryList;
 
+  const categoryDelete = useSelector((state) => state.categoryDelete);
+  const {
+    loading: loadingDelete,
+    success: successDelete,
+    error: errorDelete,
+  } = categoryDelete;
+
+  // const [visible, setVisible] = useState(false);
+  // const [confirmLoading, setConfirmLoading] = useState(false);
+
   useEffect(() => {
+    dispatch({ type: CATEGORY_DELETE_RESET });
+    if (successDelete === true) {
+      message.success('Deleted category');
+
+      dispatch(listCategories());
+    } else if (successDelete === false) {
+      message.warning('This is a warning message: ' + errorDelete);
+    }
+
     dispatch(listCategories());
-  }, [dispatch]);
+    message.success({ content: 'Loaded!', key, duration: 2 });
+  }, [dispatch, successDelete]);
+
+  const handleDelete = (id) => {
+    console.log('oke delet' + id);
+    dispatch(deleteCategory(id));
+    // setPreviewVisible(false);
+  };
 
   console.log(categories);
 
   const [current, setCurrent] = useState(1);
 
   const key = 'updatable';
-  if (loadingListCategory === true) {
-    message.loading({ content: 'Loading...', key });
-  } else {
-    message.success({ content: 'Loaded!', key, duration: 2 });
-  }
 
   const columns = [
     {
@@ -69,11 +90,19 @@ const AntAdminListCategory = () => {
         categories.length >= 1 ? (
           <Popconfirm
             title='Sure to delete?'
-
-            // onConfirm={() => this.handleDelete(record.key)}
-          >
+            onConfirm={() => handleDelete(record.categoryId)}>
             <a>Delete</a>
           </Popconfirm>
+        ) : null,
+    },
+
+    {
+      title: 'Action',
+      dataIndex: '',
+      key: 'x',
+      render: (_, record) =>
+        categories.length >= 1 ? (
+          <Link to={`/admin/category/${record.categoryId}/edit`}>Edit</Link>
         ) : null,
     },
   ];

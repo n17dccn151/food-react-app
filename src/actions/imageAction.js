@@ -6,28 +6,30 @@ import {
 } from '../constants/imageConstants.js';
 import API from '../api';
 
-export const createImage = (image) => async (dispatch, getState) => {
+export const createImage = (fmData) => async (dispatch, getState) => {
   try {
     dispatch({
       type: IMAGE_ADD_IMAGE_REQUEST,
     });
 
-    console.log('áhdjashdjashdjasdhj', image);
+    for (var value of fmData.values()) {
+      console.log('aaaa', value);
+    }
 
-    
     const {
       userLogin: { userInfo },
     } = getState();
 
     const config = {
       headers: {
-        'Content-type': 'multipart/form-data',
+        // 'Content-type': 'multipart/form-data',
+        'content-type': 'undefined',
         'Access-Control-Allow-Origin': '*',
         Authorization: `Bearer ${userInfo.accessToken}`,
       },
     };
 
-    const { data } = await API.post(`uploads`, image, config);
+    const { data } = await API.post(`uploads`, fmData, config);
 
     dispatch({
       type: IMAGE_ADD_IMAGE_SUCCESS,

@@ -5,12 +5,15 @@ import {
   productListReducer,
   productDetailsReducer,
   productUpdateReducer,
+  productDeleteReducer,
 } from './reducers/productReducers.js';
 
 import {
   categoryListReducer,
   categoryDetailsReducer,
   categoryUpdateReducer,
+  categoryCreateReducer,
+  categoryDeleteReducer,
 } from './reducers/categoryReducers.js';
 
 import { cartReducer, cartCreateReducer } from './reducers/cartReducers.js';
@@ -34,11 +37,14 @@ import {
 const reducer = combineReducers({
   categoryList: categoryListReducer,
   categoryDetails: categoryDetailsReducer,
+  categoryCreate: categoryCreateReducer,
   categoryUpdate: categoryUpdateReducer,
+  categoryDelete: categoryDeleteReducer,
 
   productList: productListReducer,
   productDetails: productDetailsReducer,
   productUpdate: productUpdateReducer,
+  productDelete: productDeleteReducer,
 
   cart: cartReducer,
   cartCreate: cartCreateReducer,
@@ -52,7 +58,7 @@ const reducer = combineReducers({
   orderList: orderListReducer,
   orderCreate: orderCreateReducer,
 
-  imageProduct: imageCreateReducer,
+  imageCreate: imageCreateReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
@@ -93,6 +99,13 @@ const initialState = {
   cartCreate: {
     loading: true,
   },
+
+  imageCreate: {
+    loading: true,
+  },
+  // categoryDelete: {
+  //   loading: true,
+  // },
 };
 
 const middleware = [thunk];

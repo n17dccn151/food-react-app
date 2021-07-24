@@ -1,12 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
+
 import {
   listProducts,
   deleteProduct,
   createProduct,
 } from '../actions/productActions.js';
 import NumberFormat from 'react-number-format';
-import { PRODUCT_CREATE_RESET } from '../constants/productConstants';
+import { PRODUCT_DELETE_RESET } from '../constants/productConstants';
 import {
   Image,
   Table,
@@ -34,8 +35,12 @@ const AntdAdminListProducts = ({ history, match }) => {
   const productList = useSelector((state) => state.productList);
   const { loading, error, products } = productList;
 
-  // const productDelete = useSelector(state => state.productDelete)
-  // const { loading: loadingDelete, success: successDelete, error: errorDelete } = productDelete
+  const productDelete = useSelector((state) => state.productDelete);
+  const {
+    loading: loadingDelete,
+    success: successDelete,
+    error: errorDelete,
+  } = productDelete;
 
   // const productCreate = useSelector(state => state.productCreate)
   // const { loading: loadingCreate, success: successCreate, error: errorCreate, product: createdProduct } = productCreate
@@ -43,13 +48,30 @@ const AntdAdminListProducts = ({ history, match }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const key = 'updatable';
   useEffect(() => {
+    dispatch({ type: PRODUCT_DELETE_RESET });
+
+    if (successDelete === true) {
+      message.success('Deleted product');
+      dispatch(listProducts());
+    } else if (successDelete === false) {
+      message.warning('This is a warning message: ' + errorDelete);
+    }
+
     dispatch(listProducts());
-  }, [dispatch]);
+    message.success({ content: 'Loaded!', key, duration: 2 });
+  }, [dispatch, successDelete]);
 
   const [current, setCurrent] = useState(1);
 
   console.log(products);
+
+  const handleDelete = (id) => {
+    console.log('oke delet' + id);
+    dispatch(deleteProduct(id));
+    // setPreviewVisible(false);
+  };
 
   // if (loading) {
   //   message.loading({ content: 'Loading...', key });
@@ -128,11 +150,18 @@ const AntdAdminListProducts = ({ history, match }) => {
         products.length >= 1 ? (
           <Popconfirm
             title='Sure to delete?'
-
-            // onConfirm={() => this.handleDelete(record.key)}
-          >
+            onConfirm={() => handleDelete(record.foodId)}>
             <a>Delete</a>
           </Popconfirm>
+        ) : null,
+    },
+    {
+      title: 'Action',
+      dataIndex: '',
+      key: 'x',
+      render: (_, record) =>
+        products.length >= 1 ? (
+          <Link to={`/admin/products/${record.foodId}/edit`}>Edit</Link>
         ) : null,
     },
   ];

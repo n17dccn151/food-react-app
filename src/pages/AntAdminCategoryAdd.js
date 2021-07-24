@@ -1,7 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
-import { createProduct } from '../actions/productActions.js';
-import { PRODUCT_CREATE_RESET } from '../constants/productConstants';
+import { createCategory } from '../actions/categoryActions.js';
+import { createImage } from '../actions/imageAction.js';
+import { CATEGORY_CREATE_RESET } from '../constants/categoryConstants';
+import { IMAGE_ADD_IMAGE_RESET } from '../constants/imageConstants';
 import {
   Button,
   Layout,
@@ -14,26 +16,79 @@ import {
   Select,
   message,
   Progress,
+  Modal,
 } from 'antd';
 import 'antd/dist/antd.css';
 
 import ImgCrop from 'antd-img-crop';
-import { createImage } from '../actions/imageAction';
+
 import API from '../api';
 import { listCategories } from '../actions/categoryActions.js';
 
 const { Content } = Layout;
 const { Option } = Select;
 
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
+
 const AntAdminCategoryAdd = ({ history, match }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userLogin);
   const categoryList = useSelector((state) => state.categoryList);
+  const imageCreate = useSelector((state) => state.imageCreate);
+  const categoryCreate = useSelector((state) => state.categoryCreate);
   const { loading, error, categories } = categoryList;
+  const {
+    loading: loadingCreateImage,
+    success: successCreateImage,
+    error: errorCreateImage,
+    images,
+  } = imageCreate;
 
+  const {
+    loading: loadingCreateCategory,
+    success: successCreateCategory,
+    error: errorCreateCategory,
+    category: ressultCategory,
+  } = categoryCreate;
+
+  const [fileList, setFileList] = useState([]);
+
+  const [file, setFile] = useState();
+
+  const [category, setCategory] = useState({});
+
+  const fmData = new FormData();
   useEffect(() => {
     dispatch(listCategories());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (successCreateImage === true) {
+      category.image = images.data.url[0];
+      dispatch(createCategory(category));
+      console.log('____xxxxxxxxxxx', category);
+      dispatch({ type: IMAGE_ADD_IMAGE_RESET });
+    } else if (successCreateImage === false) {
+      message.warning('This is a warning message: ' + errorCreateImage);
+    }
+  }, [successCreateImage]);
+
+  useEffect(() => {
+    if (successCreateCategory === true) {
+      message.success('Added category name: ' + ressultCategory.name);
+      console.log('ok' + ressultCategory.categoryId);
+      dispatch({ type: CATEGORY_CREATE_RESET });
+    } else if (successCreateCategory === false) {
+      message.warning('This is a warning message: ' + errorCreateCategory);
+    }
+  }, [successCreateCategory]);
 
   const { userInfo } = user;
 
@@ -45,7 +100,6 @@ const AntAdminCategoryAdd = ({ history, match }) => {
   const validateMessages = {
     required: '${label} is required!',
     types: {
-      email: '${label} is not a valid email!',
       number: '${label} is not a valid number!',
     },
     number: {
@@ -53,55 +107,63 @@ const AntAdminCategoryAdd = ({ history, match }) => {
     },
   };
 
-  const onFinish = (values: any) => {
-    values.category.images = imageList;
-    console.log(values);
+  const onFinish = async (values) => {
+    if (fileList.length === 0) {
+      message.warning('Please add image');
+    } else {
+      const fmData = new FormData();
+
+      setCategory(values.category);
+      console.log('____cate', category);
+      Array.from(fileList).forEach((image) => {
+        console.log(image);
+        fmData.append('files', image.originFileObj);
+      });
+
+      dispatch(createImage(fmData));
+    }
   };
 
-  const [fileList, setFileList] = useState([
-    // {
-    //   uid: '-1',
-    //   name: 'image.png',
-    //   status: 'done',
-    //   url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    // },
-  ]);
+  ///
 
-  const [file, setFile] = useState();
-
-  const [imageList, setImageList] = useState([]);
-
-  const onChange = ({ fileList: newFileList, file: newFile }) => {
-    setFileList(newFileList);
-    setFile(newFile);
-  };
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewTitle, setPreviewTitle] = useState('');
+  const [progress, setProgress] = useState(0);
 
   const onPreview = async (file) => {
-    let src = file.url;
-    if (!src) {
-      src = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj);
-        reader.onload = () => resolve(reader.result);
-      });
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
     }
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-    imgWindow.document.write(image.outerHTML);
+
+    setPreviewImage(file.url || file.preview);
+    setPreviewVisible(true);
+    setPreviewTitle(
+      file.name || file.url.substring(file.url.lastIndexOf('/') + 1)
+    );
   };
 
-  const [progress, setProgress] = useState(0);
+  const handleCancel = () => {
+    setPreviewVisible(false);
+  };
+
+  ///
+  const onChange = ({ fileList: newFileList, file: newFile }) => {
+    console.log(newFile);
+    const isJPG = newFile.type === 'image/jpeg' || newFile.type === 'image/png';
+    const isLt2M = newFile.size / 1024 / 1024 < 2;
+
+    if (!isJPG || !isLt2M) {
+    } else {
+      setFileList(newFileList);
+      setFile(newFile);
+    }
+  };
+
   const uploadImage = async (options) => {
     const { onSuccess, onError, file, onProgress } = options;
 
-    const fmData = new FormData();
     const config = {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        'Access-Control-Allow-Origin': '*',
-        Authorization: `Bearer ${userInfo.accessToken}`,
-      },
       onUploadProgress: (event) => {
         const percent = Math.floor((event.loaded / event.total) * 100);
         setProgress(percent);
@@ -111,18 +173,31 @@ const AntAdminCategoryAdd = ({ history, match }) => {
         onProgress({ percent: (event.loaded / event.total) * 100 });
       },
     };
-    fmData.append('files', file);
-    try {
-      const res = await API.post(`uploads`, fmData, config);
 
+    try {
       onSuccess('Ok');
-      console.log('server res: ', res.data.data);
-      const updateImageList = [...imageList, res.data.data];
-      setImageList(updateImageList);
     } catch (err) {
       console.log('Eroor: ', err);
       const error = new Error('Some error');
       onError({ err });
+    }
+  };
+
+  const handleupload = (file, fileList) => {
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+
+    if (!isLt2M) {
+      message.error('Image must smaller than 2MB!');
+      return false;
+    }
+    if (!isJPG) {
+      message.error('You can only upload JPG or PNG file!');
+
+      return false;
+    } else {
+      console.log('file', file, 'fileList', fileList);
+      return true;
     }
   };
 
@@ -143,43 +218,50 @@ const AntAdminCategoryAdd = ({ history, match }) => {
         <Form.Item
           name={['category', 'name']}
           label='Name'
-          rules={[{ required: true }]}>
+          rules={[
+            { required: true },
+            { min: 10, message: 'Name must be minimum 10 characters.' },
+            { max: 100, message: 'Name must be maximum 100 characters.' },
+          ]}>
           <Input />
         </Form.Item>
 
         <Form.Item
           name={['category', 'description']}
           label='Description'
-          rules={[{ required: true }]}>
+          rules={[
+            { required: true },
+            { min: 10, message: 'Description must be minimum 10 characters.' },
+            {
+              max: 100,
+              message: 'Description must be maximum 100 characters.',
+            },
+          ]}>
           <Input.TextArea />
         </Form.Item>
 
-        <Form.Item
-          label='Image'
-          // rules={[{ required: true }]}
-        >
-          <ImgCrop rotate>
-            <Upload
-              customRequest={uploadImage}
-              listType='picture-card'
-              file={file}
-              fileList={fileList}
-              onChange={onChange}
-              onPreview={onPreview}
-              accept='image/*'
-              beforeUpload={(file) => {
-                const isJPG =
-                  file.type === 'image/jpeg' || file.type === 'image/png';
-                if (!isJPG) {
-                  message.error('You can only upload JPG or PNG file!');
-                  return false;
-                } else {
-                  return true;
-                }
-              }}>
-              {fileList.length < 1 && '+ Upload'}
-            </Upload>
-          </ImgCrop>
+        <Form.Item label='Images' rules={[{ required: true }]}>
+          {/* <ImgCrop rotate> */}
+          <Upload
+            customRequest={uploadImage}
+            listType='picture-card'
+            fileList={fileList}
+            onChange={onChange}
+            onPreview={onPreview}
+            accept='image/*'
+            beforeUpload={handleupload}>
+            {fileList.length < 1 && '+ Upload'}
+          </Upload>
+
+          <Modal
+            visible={previewVisible}
+            title={previewTitle}
+            footer={null}
+            onCancel={handleCancel}>
+            <img alt='example' style={{ width: '100%' }} src={previewImage} />
+          </Modal>
+
+          {/* </ImgCrop> */}
         </Form.Item>
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 14 }}>
           <Button type='primary' htmlType='submit'>

@@ -28,7 +28,6 @@ import {
   Tag,
   Divider,
   message,
-  s,
 } from 'antd';
 import { CART_ADD_ITEM_RESET } from '../constants/cartConstants';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';

@@ -17,13 +17,16 @@ export const imageCreateReducer = (state = {}, action) => {
       return {
         loading: false,
         success: true,
-        order: action.payload,
+        images: action.payload,
       };
     case IMAGE_ADD_IMAGE_FAIL:
       return {
         loading: false,
+        success: false,
         error: action.payload,
       };
+    case IMAGE_ADD_IMAGE_RESET:
+      return {};
     default:
       return state;
   }

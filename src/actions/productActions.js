@@ -41,7 +41,7 @@ export const getProductDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_DETAILS_REQUEST });
     const { data } = await API.get(`foods/${id}`);
-    
+    console.log('2', id);
     dispatch({
       type: PRODUCT_DETAILS_SUCCESS,
       payload: data,
