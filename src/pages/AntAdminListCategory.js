@@ -22,6 +22,15 @@ import { Link } from 'react-router-dom';
 const { Content } = Layout;
 const { SubMenu } = Menu;
 
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
+
 const AntAdminListCategory = () => {
   const dispatch = useDispatch();
   const categoryList = useSelector((state) => state.categoryList);

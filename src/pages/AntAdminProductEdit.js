@@ -16,6 +16,7 @@ import {
   message,
   Progress,
   Modal,
+  Tag,
 } from 'antd';
 import 'antd/dist/antd.css';
 
@@ -80,6 +81,50 @@ const AntAdminProductEdit = ({ history, match }) => {
 
   console.log('hhahah', fileList);
 
+  useEffect(() => {
+    if (successUpdateProduct === true) {
+      message.success('Edit product id: ' + ressultProduct.foodId);
+
+      dispatch({ type: PRODUCT_CREATE_RESET });
+    } else if (successUpdateProduct === false) {
+      message.warning('This is a warning message: ' + errorUpdateProduct);
+    }
+  }, [successUpdateProduct]);
+
+  useEffect(() => {
+    if (successCreateImage === true) {
+      console.log('exist file', exisFileList);
+
+      var list = [];
+
+      Array.from(images.data.url).forEach((image) => {
+        // console.log('rul', image);
+        list.push({ url: image });
+        // setImageRessult(...imageRessult, { url: image });
+      });
+
+      Array.from(exisFileList).forEach((image) => {
+        // console.log('rul_exst', image);
+        list.push(image);
+        // setImageRessult(...imageRessult, { url: image });
+      });
+
+      productEdit.images = list;
+      console.log('new ', productEdit);
+
+      // console.log('uploaded', images.data.url);
+      // console.log('exist', exisFileList);
+
+      // productEdit.images = images.data.url[0];
+
+      dispatch(updateProduct(productId, productEdit));
+
+      dispatch({ type: IMAGE_ADD_IMAGE_RESET });
+    } else if (successCreateImage === false) {
+      message.warning('This is a warning message: ' + errorCreateImage);
+    }
+  }, [successCreateImage]);
+
   let nameCategory;
   useEffect(() => {
     dispatch(listCategories());
@@ -124,7 +169,16 @@ const AntAdminProductEdit = ({ history, match }) => {
       ) {
         message.warning('You not change');
       } else {
+        if (values.product.categoryId === nameCategory) {
+          values.product.categoryId = product.categoryId;
+          console.log('bang', values.product);
+        } else {
+          values.product.categoryId = Number(values.product.categoryId);
+          console.log('ko bang', productEdit);
+        }
+
         setProductEdit(values.product);
+
         const fmData = new FormData();
         var checkUrl = -1;
         var checkNotUrl = -1;
@@ -142,15 +196,17 @@ const AntAdminProductEdit = ({ history, match }) => {
             fmData.append('files', image.originFileObj);
           }
         });
+
         if (checkNotUrl === 0) {
           console.log('ok');
-          // dispatch(createImage(fmData));
+          dispatch(createImage(fmData));
         }
 
         if (checkNotUrl < 0 && checkUrl === 0) {
-          console.log('upload exist');
-          // values.product.images = product.images;
-          // dispatch(updateCategory(categoryId, values.category));
+          values.product.images = product.images;
+
+          console.log('upload exist' + JSON.stringify(values.product));
+          dispatch(updateProduct(productId, values.product));
         }
       }
     }
@@ -301,8 +357,12 @@ const AntAdminProductEdit = ({ history, match }) => {
             value: product.description,
           },
           {
-            name: ['product', 'category'],
+            name: ['product', 'categoryId'],
             value: nameCategory,
+          },
+          {
+            name: ['product', 'status'],
+            value: product.status,
           },
         ]}>
         <Form.Item
@@ -351,7 +411,7 @@ const AntAdminProductEdit = ({ history, match }) => {
         </Form.Item>
 
         <Form.Item
-          name={['product', 'category']}
+          name={['product', 'categoryId']}
           label='Category'
           rules={[{ required: true }]}>
           <Select
@@ -372,6 +432,38 @@ const AntAdminProductEdit = ({ history, match }) => {
             }>
             {categories.map((category) => (
               <Option key={category.categoryId}>{category.name}</Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name={['product', 'status']}
+          label='Status'
+          rules={[{ required: true }]}>
+          <Select
+            // labelInValue
+
+            placeholder='Search to Select'
+            style={{ width: 240 }}
+            showSearch
+            // onChange={handleProvinceChange}
+            optionFilterProp='children'
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              optionA.children
+                .toLowerCase()
+                .localeCompare(optionB.children.toLowerCase())
+            }>
+            {['AVAILABLE', 'UNAVAILABLE'].map((item) => (
+              <Option key={item}>
+                {item === 'AVAILABLE' ? (
+                  <Tag color='blue'>{item}</Tag>
+                ) : (
+                  <Tag color='volcano'>{item}</Tag>
+                )}
+              </Option>
             ))}
           </Select>
         </Form.Item>

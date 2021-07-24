@@ -162,18 +162,17 @@ const AntAdminCategoryEdit = ({ history, match }) => {
             setNewFileList([...newFileList, image]);
             fmData.append('files', image.originFileObj);
           }
-
-          if (checkNotUrl === 0) {
-            console.log('ok');
-            dispatch(createImage(fmData));
-          }
-
-          if (checkNotUrl < 0 && checkUrl === 0) {
-            console.log('upload exist');
-            values.category.image = category.image;
-            dispatch(updateCategory(categoryId, values.category));
-          }
         });
+        if (checkNotUrl === 0) {
+          console.log('ok');
+          dispatch(createImage(fmData));
+        }
+
+        if (checkNotUrl < 0 && checkUrl === 0) {
+          console.log('upload exist');
+          values.category.image = category.image;
+          dispatch(updateCategory(categoryId, values.category));
+        }
       }
     }
   };

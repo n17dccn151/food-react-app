@@ -126,7 +126,7 @@ export const createProduct = (product) => async (dispatch, getState) => {
   }
 };
 
-export const updateProduct = (product) => async (dispatch, getState) => {
+export const updateProduct = (id, product) => async (dispatch, getState) => {
   try {
     dispatch({
       type: PRODUCT_UPDATE_REQUEST,
@@ -144,7 +144,7 @@ export const updateProduct = (product) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await API.put(`foods/${product._id}`, product, config);
+    const { data } = await API.put(`foods/${id}`, product, config);
 
     dispatch({
       type: PRODUCT_UPDATE_SUCCESS,
