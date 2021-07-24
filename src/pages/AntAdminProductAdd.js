@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { createProduct } from '../actions/productActions.js';
 import NumberFormat from 'react-number-format';
 import { PRODUCT_CREATE_RESET } from '../constants/productConstants';
+import { IMAGE_ADD_IMAGE_RESET } from '../constants/imageConstants';
+import { createImage } from '../actions/imageAction.js';
 import {
   Button,
   Layout,
@@ -15,26 +17,83 @@ import {
   Select,
   message,
   Progress,
+  Modal,
 } from 'antd';
 import 'antd/dist/antd.css';
 
 import ImgCrop from 'antd-img-crop';
-import { createImage } from '../actions/imageAction';
+
 import API from '../api';
 import { listCategories } from '../actions/categoryActions.js';
 
 const { Content } = Layout;
 const { Option } = Select;
 
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
+
 const AntAdminProductAdd = ({ history, match }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userLogin);
   const categoryList = useSelector((state) => state.categoryList);
   const { loading, error, categories } = categoryList;
+  const imageCreate = useSelector((state) => state.imageCreate);
+  const {
+    loading: loadingCreateImage,
+    success: successCreateImage,
+    error: errorCreateImage,
+    images,
+  } = imageCreate;
 
+  const productCreate = useSelector((state) => state.productCreate);
+  const {
+    loading: loadingCreateProduct,
+    success: successCreateProduct,
+    error: errorCreateProduct,
+    product: ressultProduct,
+  } = productCreate;
+  const [product, setProduct] = useState({});
+  const [imageRessult, setImageRessult] = useState({});
   useEffect(() => {
     dispatch(listCategories());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (successCreateImage === true) {
+      var list = [];
+
+      Array.from(images.data.url).forEach((image) => {
+        // console.log('rul', image);
+        list.push({ url: image });
+        // setImageRessult(...imageRessult, { url: image });
+      });
+
+      product.images = list;
+      console.log('rul', product);
+
+      dispatch(createProduct(product));
+      // console.log('____xxxxxxxxxxx', product);
+      dispatch({ type: IMAGE_ADD_IMAGE_RESET });
+    } else if (successCreateImage === false) {
+      message.warning('This is a warning message: ' + errorCreateImage);
+    }
+  }, [successCreateImage]);
+
+  useEffect(() => {
+    if (successCreateProduct === true) {
+      message.success('Added product name: ' + ressultProduct.name);
+
+      dispatch({ type: PRODUCT_CREATE_RESET });
+    } else if (successCreateProduct === false) {
+      message.warning('This is a warning message: ' + errorCreateProduct);
+    }
+  }, [successCreateProduct]);
 
   console.log(categories);
 
@@ -56,59 +115,76 @@ const AntAdminProductAdd = ({ history, match }) => {
     },
   };
 
-  const onFinish = (values: any) => {
-    values.product.images = imageList;
-    console.log(values);
+  const onFinish = (values) => {
+    // values.product.images = imageList;
+    // console.log(values);
+
+    if (fileList.length === 0) {
+      message.warning('Please add image');
+    } else {
+      const fmData = new FormData();
+
+      setProduct(values.product);
+
+      Array.from(fileList).forEach((image) => {
+        console.log(image);
+        fmData.append('files', image.originFileObj);
+      });
+
+      dispatch(createImage(fmData));
+    }
   };
 
-  const [fileList, setFileList] = useState([
-    // {
-    //   uid: '-1',
-    //   name: 'image.png',
-    //   status: 'done',
-    //   url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    // },
-  ]);
+  const [fileList, setFileList] = useState([]);
 
   const [file, setFile] = useState();
 
   const [imageList, setImageList] = useState([]);
 
-  const onChange = ({ fileList: newFileList, file: newFile }) => {
-    setFileList(newFileList);
-    setFile(newFile);
-  };
-
   function onChangePrice(value) {
     console.log('changed', value);
   }
 
+  ///
+
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewTitle, setPreviewTitle] = useState('');
+  const [progress, setProgress] = useState(0);
+
   const onPreview = async (file) => {
-    let src = file.url;
-    if (!src) {
-      src = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj);
-        reader.onload = () => resolve(reader.result);
-      });
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
     }
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-    imgWindow.document.write(image.outerHTML);
+
+    setPreviewImage(file.url || file.preview);
+    setPreviewVisible(true);
+    setPreviewTitle(
+      file.name || file.url.substring(file.url.lastIndexOf('/') + 1)
+    );
   };
 
-  const [progress, setProgress] = useState(0);
+  const handleCancel = () => {
+    setPreviewVisible(false);
+  };
+
+  ///
+  const onChange = ({ fileList: newFileList, file: newFile }) => {
+    console.log(newFile);
+    const isJPG = newFile.type === 'image/jpeg' || newFile.type === 'image/png';
+    const isLt2M = newFile.size / 1024 / 1024 < 2;
+
+    if (!isJPG || !isLt2M) {
+    } else {
+      setFileList(newFileList);
+      setFile(newFile);
+    }
+  };
+
   const uploadImage = async (options) => {
     const { onSuccess, onError, file, onProgress } = options;
 
-    const fmData = new FormData();
     const config = {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        'Access-Control-Allow-Origin': '*',
-        Authorization: `Bearer ${userInfo.accessToken}`,
-      },
       onUploadProgress: (event) => {
         const percent = Math.floor((event.loaded / event.total) * 100);
         setProgress(percent);
@@ -118,18 +194,31 @@ const AntAdminProductAdd = ({ history, match }) => {
         onProgress({ percent: (event.loaded / event.total) * 100 });
       },
     };
-    fmData.append('files', file);
-    try {
-      const res = await API.post(`uploads`, fmData, config);
 
+    try {
       onSuccess('Ok');
-      console.log('server res: ', res.data.data);
-      const updateImageList = [...imageList, res.data.data];
-      setImageList(updateImageList);
     } catch (err) {
       console.log('Eroor: ', err);
       const error = new Error('Some error');
       onError({ err });
+    }
+  };
+
+  const handleupload = (file, fileList) => {
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+
+    if (!isLt2M) {
+      message.error('Image must smaller than 2MB!');
+      return false;
+    }
+    if (!isJPG) {
+      message.error('You can only upload JPG or PNG file!');
+
+      return false;
+    } else {
+      console.log('file', file, 'fileList', fileList);
+      return true;
     }
   };
 
@@ -150,13 +239,21 @@ const AntAdminProductAdd = ({ history, match }) => {
         fields={[
           {
             name: ['product', 'price'],
-            value: 5000,
+            value: 10000,
+          },
+          {
+            name: ['product', 'quantity'],
+            value: 100,
           },
         ]}>
         <Form.Item
           name={['product', 'name']}
           label='Name'
-          rules={[{ required: true }]}>
+          rules={[
+            { required: true },
+            { min: 10, message: 'Name must be minimum 10 characters.' },
+            { max: 100, message: 'Name must be maximum 100 characters.' },
+          ]}>
           <Input />
         </Form.Item>
         <Form.Item
@@ -165,7 +262,7 @@ const AntAdminProductAdd = ({ history, match }) => {
           label='Price'
           rules={[{ type: 'number' }, { required: true }]}>
           <InputNumber
-            min={0}
+            min={10000}
             step={5000}
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -190,15 +287,21 @@ const AntAdminProductAdd = ({ history, match }) => {
         <Form.Item
           name={['product', 'description']}
           label='Description'
-          rules={[{ required: true }]}>
+          rules={[
+            { required: true },
+            { min: 10, message: 'Description must be minimum 10 characters.' },
+            {
+              max: 100,
+              message: 'Description must be maximum 100 characters.',
+            },
+          ]}>
           <Input.TextArea />
         </Form.Item>
 
         <Form.Item
-          name={['product', 'category']}
+          name={['product', 'categoryId']}
           label='Category'
-          // rules={[{ required: true }]}
-        >
+          rules={[{ required: true }]}>
           <Select
             placeholder='Search to Select'
             style={{ width: 240 }}
@@ -223,28 +326,25 @@ const AntAdminProductAdd = ({ history, match }) => {
           label='Image'
           // rules={[{ required: true }]}
         >
-          <ImgCrop rotate>
-            <Upload
-              customRequest={uploadImage}
-              listType='picture-card'
-              file={file}
-              fileList={fileList}
-              onChange={onChange}
-              onPreview={onPreview}
-              accept='image/*'
-              beforeUpload={(file) => {
-                const isJPG =
-                  file.type === 'image/jpeg' || file.type === 'image/png';
-                if (!isJPG) {
-                  message.error('You can only upload JPG or PNG file!');
-                  return false;
-                } else {
-                  return true;
-                }
-              }}>
-              {fileList.length < 5 && '+ Upload'}
-            </Upload>
-          </ImgCrop>
+          <Upload
+            customRequest={uploadImage}
+            listType='picture-card'
+            file={file}
+            fileList={fileList}
+            onChange={onChange}
+            onPreview={onPreview}
+            accept='image/*'
+            beforeUpload={handleupload}>
+            {fileList.length < 5 && '+ Upload'}
+          </Upload>
+
+          <Modal
+            visible={previewVisible}
+            title={previewTitle}
+            footer={null}
+            onCancel={handleCancel}>
+            <img alt='example' style={{ width: '100%' }} src={previewImage} />
+          </Modal>
         </Form.Item>
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 14 }}>
           <Button type='primary' htmlType='submit'>

@@ -76,6 +76,7 @@ const AntAdminCategoryEdit = ({ history, match }) => {
     }
   }, [dispatch, categoryId, category]);
 
+  console.log('hhahah', category);
   const { userInfo } = user;
 
   const layout = {

@@ -6,6 +6,7 @@ import {
   productDetailsReducer,
   productUpdateReducer,
   productDeleteReducer,
+  productCreateReducer,
 } from './reducers/productReducers.js';
 
 import {
@@ -45,6 +46,7 @@ const reducer = combineReducers({
   productDetails: productDetailsReducer,
   productUpdate: productUpdateReducer,
   productDelete: productDeleteReducer,
+  productCreate: productCreateReducer,
 
   cart: cartReducer,
   cartCreate: cartCreateReducer,
@@ -70,9 +72,9 @@ const initialState = {
     loading: true,
   },
 
-  productDetails: {
-    loading: true,
-  },
+  // productDetails: {
+  //   loading: true,
+  // },
 
   cart: {
     loading: true,

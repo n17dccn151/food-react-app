@@ -35,6 +35,7 @@ export const productListReducer = (state = { products: [] }, action) => {
 export const productDetailsReducer = (state = { product: {} }, action) => {
   switch (action.type) {
     case PRODUCT_DETAILS_REQUEST:
+      console.log('11231212312');
       return { loading: true, ...state };
     case PRODUCT_DETAILS_SUCCESS:
       return { loading: false, product: action.payload };
@@ -67,7 +68,7 @@ export const productCreateReducer = (state = {}, action) => {
     case PRODUCT_CREATE_SUCCESS:
       return { loading: false, success: true, product: action.payload };
     case PRODUCT_CREATE_FAIL:
-      return { loading: false, error: action.payload };
+      return { loading: false, success: false, error: action.payload };
     case PRODUCT_CREATE_RESET:
       return {};
 

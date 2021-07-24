@@ -41,11 +41,12 @@ export const getProductDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_DETAILS_REQUEST });
     const { data } = await API.get(`foods/${id}`);
-    console.log('2', id);
+    console.log('1', id);
     dispatch({
       type: PRODUCT_DETAILS_SUCCESS,
       payload: data,
     });
+    console.log('data', data);
   } catch (error) {
     dispatch({
       type: PRODUCT_DETAILS_FAIL,
