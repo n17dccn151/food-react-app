@@ -100,7 +100,10 @@ const AntAdminListCategory = () => {
           <Popconfirm
             title='Sure to delete?'
             onConfirm={() => handleDelete(record.categoryId)}>
-            <a>Delete</a>
+            {/* <a>Delete</a> */}
+            <a>
+              <Tag color='error'>Delete</Tag>
+            </a>
           </Popconfirm>
         ) : null,
     },
@@ -111,7 +114,9 @@ const AntAdminListCategory = () => {
       key: 'x',
       render: (_, record) =>
         categories.length >= 1 ? (
-          <Link to={`/admin/category/${record.categoryId}/edit`}>Edit</Link>
+          <Link to={`/admin/category/${record.categoryId}/edit`}>
+            <Tag color='green'>Edit</Tag>
+          </Link>
         ) : null,
     },
   ];

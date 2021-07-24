@@ -21,11 +21,8 @@ import Logout from './components/Logout';
 import { Layout } from 'antd';
 import NotFound from './components/NotFound';
 import AntOrderInfo from './pages/AntOrderInfo';
-
-
-
-
-
+import AntAdminUserEdit from './pages/AntAdminUserEdit';
+import AntAdminUserAdd from './pages/AntAdminUserAdd';
 
 function App() {
   const userLogin = useSelector((state) => state.userLogin);
@@ -87,6 +84,30 @@ function App() {
                     : Login
                 }
               />
+
+              <Route
+                exact
+                path='/admin/users/add'
+                component={
+                  isAdmin > -1
+                    ? AntAdminUserAdd
+                    : isUser > -1
+                    ? AntError
+                    : Login
+                }
+              />
+              <Route
+                exact
+                path='/admin/users/:id/edit'
+                component={
+                  isAdmin > -1
+                    ? AntAdminUserEdit
+                    : isUser > -1
+                    ? AntError
+                    : Login
+                }
+              />
+
               <Route
                 exact
                 path='/admin/category'

@@ -15,6 +15,10 @@ import {
   ORDER_LIST_REQUEST,
   ORDER_LIST_SUCCESS,
   ORDER_LIST_FAIL,
+  ORDER_UPDATE_REQUEST,
+  ORDER_UPDATE_SUCCESS,
+  ORDER_UPDATE_FAIL,
+  ORDER_UPDATE_RESET,
 } from '../constants/orderConstants';
 
 import API from '../api';
@@ -143,6 +147,41 @@ export const getListOrder = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: ORDER_LIST_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const updateOrder = (id, status) => async (dispatch, getState) => {
+  try {
+    console.log('eeeeeeeee', status);
+    dispatch({
+      type: ORDER_UPDATE_REQUEST,
+    });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${userInfo.accessToken}`,
+      },
+    };
+
+    const { data } = await API.put(`orders/${id}`, status, config);
+
+    dispatch({
+      type: ORDER_UPDATE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_UPDATE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

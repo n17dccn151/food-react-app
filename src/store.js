@@ -33,6 +33,7 @@ import {
   orderDetailsReducer,
   orderListReducer,
   orderCreateReducer,
+  orderUpdateReducer,
 } from './reducers/orderReducers.js';
 
 const reducer = combineReducers({
@@ -59,6 +60,7 @@ const reducer = combineReducers({
   orderDetails: orderDetailsReducer,
   orderList: orderListReducer,
   orderCreate: orderCreateReducer,
+  orderUpdate: orderUpdateReducer,
 
   imageCreate: imageCreateReducer,
 });

@@ -151,7 +151,9 @@ const AntdAdminListProducts = ({ history, match }) => {
           <Popconfirm
             title='Sure to delete?'
             onConfirm={() => handleDelete(record.foodId)}>
-            <a>Delete</a>
+            <a>
+              <Tag color='error'>Delete</Tag>
+            </a>
           </Popconfirm>
         ) : null,
     },
@@ -161,7 +163,9 @@ const AntdAdminListProducts = ({ history, match }) => {
       key: 'x',
       render: (_, record) =>
         products.length >= 1 ? (
-          <Link to={`/admin/products/${record.foodId}/edit`}>Edit</Link>
+          <Link to={`/admin/products/${record.foodId}/edit`}>
+            <Tag color='green'>Edit</Tag>
+          </Link>
         ) : null,
     },
   ];
