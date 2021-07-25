@@ -90,6 +90,7 @@ const AntAdminProductAdd = ({ history, match }) => {
       message.success('Added product name: ' + ressultProduct.name);
 
       dispatch({ type: PRODUCT_CREATE_RESET });
+      history.push('/admin/products');
     } else if (successCreateProduct === false) {
       message.warning('This is a warning message: ' + errorCreateProduct);
     }

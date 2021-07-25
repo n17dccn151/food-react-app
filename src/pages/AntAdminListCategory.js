@@ -81,13 +81,14 @@ const AntAdminListCategory = () => {
       title: 'Image',
       dataIndex: 'image',
       render: (image) => (
-        <Image width={150} alt={image} src={image} preview={{}} />
+        <Image width={100} alt={image} src={image} preview={{}} />
       ),
     },
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      width: '40%',
       render: (text) => <a>{text}</a>,
     },
 
@@ -95,6 +96,7 @@ const AntAdminListCategory = () => {
       title: 'Action',
       dataIndex: '',
       key: 'x',
+      width: '10%',
       render: (_, record) =>
         categories.length >= 1 ? (
           <Popconfirm
@@ -112,6 +114,7 @@ const AntAdminListCategory = () => {
       title: 'Action',
       dataIndex: '',
       key: 'x',
+      width: '10%',
       render: (_, record) =>
         categories.length >= 1 ? (
           <Link to={`/admin/category/${record.categoryId}/edit`}>
@@ -149,11 +152,11 @@ const AntAdminListCategory = () => {
 
           <Row>
             <Col span={12}>
-              <MyPagination
+              {/* <MyPagination
                 total={categories.length}
                 current={current}
                 onChange={setCurrent}
-              />
+              /> */}
             </Col>
 
             <Col span={12}>
@@ -174,8 +177,15 @@ const AntAdminListCategory = () => {
               ),
               rowExpandable: (record) => record.description !== '',
             }}
-            dataSource={getData(current, pageSize)}
-            pagination={false}
+            // dataSource={getData(current, pageSize)}
+            // pagination={false}
+            dataSource={categories}
+            pagination={{
+              pageSizeOptions: ['10', '20', '30'],
+              showSizeChanger: true,
+              locale: { items_per_page: '' },
+            }}
+            scroll={{ x: '', y: 400 }}
           />
         </Content>
       </Layout>

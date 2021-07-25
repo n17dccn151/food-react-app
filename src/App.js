@@ -23,6 +23,7 @@ import NotFound from './components/NotFound';
 import AntOrderInfo from './pages/AntOrderInfo';
 import AntAdminUserEdit from './pages/AntAdminUserEdit';
 import AntAdminUserAdd from './pages/AntAdminUserAdd';
+import UserInfo from './pages/UserInfo';
 
 function App() {
   const userLogin = useSelector((state) => state.userLogin);
@@ -165,6 +166,7 @@ function App() {
               />
 
               <Route exact path='/products/:id' component={AntProductDetail} />
+              <Route exact path='/userinfo' component={UserInfo} />
               <Route
                 exact
                 path='/cart/:id?'
@@ -184,6 +186,7 @@ function App() {
               {/*  */}
 
               <Route exact path='/' component={Home} />
+              <Route exact path='/search/:keyword' component={Home} />
 
               <Route path='/login' component={Login} />
 

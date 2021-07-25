@@ -86,6 +86,7 @@ const AntAdminProductEdit = ({ history, match }) => {
       message.success('Edit product id: ' + ressultProduct.foodId);
 
       dispatch({ type: PRODUCT_CREATE_RESET });
+      history.push('/admin/products');
     } else if (successUpdateProduct === false) {
       message.warning('This is a warning message: ' + errorUpdateProduct);
     }

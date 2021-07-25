@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../actions/userActions.js';
+import SearchCustom from '../components/Search';
 import { Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import {
   Layout,
@@ -31,19 +34,23 @@ import 'antd/dist/antd.css';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
-const { Search } = Input;
+
 const Admin = ({ history, match }) => {
   const [collapsed, setCollapsed] = useState(false);
-
+  const dispatch = useDispatch();
   const onCollapse = () => {
     setCollapsed(!collapsed);
   };
 
-  const { Search } = Input;
+  // const { Search } = Input;
   const { location } = history;
 
   const userLogin = useSelector((state) => state.userLogin);
 
+  const checkLogout = () => {
+    dispatch(logout());
+    history.push('/login');
+  };
   console.log('aaaaaaaa', userLogin);
 
   return location.pathname.split('/')[1] === 'admin' ? (
@@ -60,7 +67,7 @@ const Admin = ({ history, match }) => {
           <Link to='/admin/dashboard' />
         </Menu.Item>
 
-        <Menu.Item key='categoryy' icon={<BarsOutlined />}>
+        <Menu.Item key='category' icon={<BarsOutlined />}>
           Category
           <Link to='/admin/category' />
         </Menu.Item>
@@ -73,19 +80,12 @@ const Admin = ({ history, match }) => {
           Order
           <Link to='/admin/orders' />
         </Menu.Item>
-        <Menu.Item key='userss' icon={<TeamOutlined />}>
-          Customer
+        <Menu.Item key='users' icon={<TeamOutlined />}>
+          User
           <Link to='/admin/users' />
         </Menu.Item>
-        <Menu.Item key='6' icon={<DesktopOutlined />}>
-          Admin
-        </Menu.Item>
-
-        <Menu.Item key='7' icon={<FileOutlined />}>
-          ----
-        </Menu.Item>
-        <Menu.Item key='8' icon={<FileOutlined />}>
-          ----
+        <Menu.Item key='6' icon={<DesktopOutlined />} onClick={checkLogout}>
+          Log out
         </Menu.Item>
       </Menu>
     </Sider>
@@ -106,12 +106,14 @@ const Admin = ({ history, match }) => {
           </div>
         </Col>
         <Col span={8}>
-          <Search
+          <Route render={({ history }) => <SearchCustom history={history} />} />
+
+          {/* <Search
             style={{ margin: '16px' }}
             placeholder='input search text'
             // onSearch={onSearch}
             enterButton
-          />
+          /> */}
         </Col>
         <Col span={4}></Col>
         {userLogin.userInfo != null ? (

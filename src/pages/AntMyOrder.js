@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+
 import { useDispatch, useSelector } from 'react-redux';
-import Message from '../components/Message.js';
+
 import Loading from '../components/Loading.js';
 import { addToCart } from '../actions/cartActions';
 import { userCart } from '../actions/cartActions.js';
@@ -9,17 +9,8 @@ import {
   Row,
   Col,
   Image,
-  Space,
-  Card,
-  Devider,
   Typography,
-  Comment,
-  Avatar,
-  Form,
   Button,
-  List,
-  Input,
-  Rate,
   InputNumber,
   Checkbox,
   Affix,
@@ -27,10 +18,9 @@ import {
   Collapse,
   Tabs,
 } from 'antd';
-const { TextArea } = Input;
 
 const { Title } = Typography;
-const { Meta } = Card;
+
 const { Panel } = Collapse;
 const AntMyOrder = ({ match, location, history }) => {
   const productId = match.params.id;

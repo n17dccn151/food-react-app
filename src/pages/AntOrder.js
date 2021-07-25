@@ -1,31 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import Message from '../components/Message.js';
 import AntLoader from '../components/AntLoading.js';
 import { getUserDetailList } from '../actions/userActions.js';
-import { userCart } from '../actions/cartActions.js';
 import NumberFormat from 'react-number-format';
 import { createOrder } from '../actions/orderActions.js';
-import ErrorResult from '../components/ErrorResult.js';
 import SuccessResult from '../components/SuccessResult.js';
 import {
   Row,
   Col,
   Image,
   Space,
-  Card,
-  Devider,
   Typography,
-  Comment,
-  Avatar,
-  Form,
   Button,
-  List,
   Input,
-  Rate,
-  InputNumber,
-  Checkbox,
   Affix,
   Collapse,
   Radio,

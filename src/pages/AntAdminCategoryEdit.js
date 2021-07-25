@@ -118,6 +118,7 @@ const AntAdminCategoryEdit = ({ history, match }) => {
       message.success('Edit category id: ' + ressultCategory.categoryId);
       console.log('ok' + ressultCategory.categoryId);
       dispatch({ type: CATEGORY_CREATE_RESET });
+      history.push('/admin/category');
     } else if (successUpdateCategory === false) {
       message.warning('This is a warning message: ' + errorUpdateCategory);
     }

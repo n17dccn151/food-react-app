@@ -1,27 +1,44 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import AntProduct from './AntProduct';
 import Loading from './Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../actions/productActions.js';
-import { Layout, Row, Divider, Space, Col, Pagination } from 'antd';
+import { withRouter } from 'react-router';
+import { Layout, Row, Divider, Space, Col, Pagination, Text } from 'antd';
 import AntLoader from '../components/AntLoading';
-const AntProductList = () => {
+const AntProductList = ({ history, match }) => {
+  const keyword = match.params.keyword;
+
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.productList);
   const { loading, error, products } = productList;
   const { Header, Content, Footer, Sider } = Layout;
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
   useEffect(() => {
-    dispatch(listProducts());
-  }, [dispatch]);
+    if (!loading) {
+      console.log('aaaaaaaaaaa', products.data.totalItems);
+    }
+    dispatch(listProducts(keyword, pageSize, current - 1));
+  }, [dispatch, keyword, pageSize, current]);
 
   //const { foods, loading } = useGlobalContext();
 
-  const pageSize = 10;
-  const getData = (current, pageSize) => {
-    // Normally you should get the data from the server
-    return products.slice((current - 1) * pageSize, current * pageSize);
-  };
-  // Custom pagination component
+  if (loading === false) {
+    console.log('aaaaaaaaaaa', products.data.totalItems);
+  }
+
+  function onShowSizeChange(current, pageSize) {
+    // console.log(current, pageSize);
+    // setPageSize(pageSize);
+  }
+
+  function onPageChange(current, pageSize) {
+    console.log(current, pageSize);
+    setCurrent(current);
+    setPageSize(pageSize);
+  }
   const MyPagination = ({ total, onChange, current }) => {
     return (
       <Pagination
@@ -29,6 +46,8 @@ const AntProductList = () => {
         total={total}
         current={current}
         pageSize={pageSize}
+        showSizeChanger
+        onShowSizeChange={onShowSizeChange}
       />
     );
   };
@@ -40,18 +59,28 @@ const AntProductList = () => {
     <Content style={{ margin: '0 16px' }}>
       <Divider>
         <Space align='baseline' size={[16, 16]} wrap>
-          {products.map((item) => {
+          {products.data.map((item) => {
             console.log(item);
             return <AntProduct key={item.foodId} {...item} />;
           })}
         </Space>
       </Divider>
       <Divider>
-        <Pagination defaultCurrent={1} total={500} />
+        <Col span={12}>
+          <MyPagination
+            total={
+              !keyword || keyword.length === 0
+                ? products.totalItems
+                : products.data.length
+            }
+            current={current}
+            onChange={onPageChange}
+          />
+        </Col>
       </Divider>
     </Content>
   );
   // </Layout>
 };
 
-export default AntProductList;
+export default withRouter(AntProductList);

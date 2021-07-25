@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Loading from '../components/Loading';
-import { Link } from 'react-router-dom';
 import { getProductDetails } from '../actions/productActions.js';
 import NumberFormat from 'react-number-format';
 import AntLoader from '../components/AntLoading';
@@ -10,7 +8,6 @@ import AntError from '../components/AntError';
 import {
   Row,
   Col,
-  Image,
   Typography,
   Form,
   Button,
@@ -19,12 +16,21 @@ import {
   InputNumber,
   Space,
   message,
+  Carousel,
 } from 'antd';
 import { CART_ADD_ITEM_RESET } from '../constants/cartConstants';
 const { Title, Paragraph, Text, Link: LinkTy } = Typography;
 const { TextArea } = Input;
 
+const contentStyle = {
+  color: '#fff',
+  lineHeight: '160px',
+  textAlign: 'center',
+  background: '#364d79',
+};
+
 const AntProductDetail = ({ match, history }) => {
+  const productId = match.params.id;
   const dispatch = useDispatch();
 
   const productDetails = useSelector((state) => state.productDetails);
@@ -48,22 +54,20 @@ const AntProductDetail = ({ match, history }) => {
     dispatch(addToCart(match.params.id, qty));
     // history.push(`/cartt/${match.params.id}?qty=${qty}`);
   };
-  console.log(success);
+  console.log(product);
+
   useEffect(() => {
-    console.log('jetdddssszz');
     if (success) {
-      console.log('jetsss');
       message.success('Added to cart');
       dispatch({ type: CART_ADD_ITEM_RESET });
     } else if (success === false) {
       message.warning(errorCreate);
       dispatch({ type: CART_ADD_ITEM_RESET });
     }
-    // dispatch({ type: CART_ADD_ITEM_RESET });
-    dispatch(getProductDetails(match.params.id));
-  }, [dispatch, match, success]);
 
-  // console.log({ ...product.images }[0].url, ' ', match, '  ', history);
+    console.log('jetsss');
+    dispatch(getProductDetails(match.params.id));
+  }, [dispatch, productId, success]);
 
   function onChange(value) {
     console.log('changed', value);
@@ -93,12 +97,22 @@ const AntProductDetail = ({ match, history }) => {
   ) : (
     <>
       <Row justify='space-around' align='middle'>
-        <Col span={12} style={({ margin: '0 auto' }, { padding: '35px' })}>
-          <Image
+        <Col span={12} style={({ margin: '0 auto' }, { padding: '55px' })}>
+          <Carousel autoplay>
+            {product.images.map((item) => (
+              <div>
+                <h3 style={contentStyle}>
+                  <img src={item.url} preview={{ visible: false }} />
+                </h3>
+              </div>
+            ))}
+          </Carousel>
+
+          {/* <Image
             width={400}
-            src={{ ...product.images }[0].url}
+            // src={{ ...product.images }[0].url}
             preview={{ visible: false }}
-          />
+          /> */}
         </Col>
         <Col span={12} style={({ margin: '0 auto' }, { padding: '35px' })}>
           <Title level={3}>{product.name}</Title>
@@ -114,7 +128,7 @@ const AntProductDetail = ({ match, history }) => {
           <Rate
             allowHalf
             disabled
-            defaultValue={product.rate === 0 ? 1 : product.rate}
+            defaultValue={product.rate === 0 ? 4.5 : product.rate}
           />
           <Row style={{ marginTop: '16px' }}>
             <InputNumber

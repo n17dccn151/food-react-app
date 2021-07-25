@@ -17,31 +17,35 @@ import {
 } from '../constants/productConstants.js';
 import API from '../api';
 
-export const listProducts = () => async (dispatch) => {
-  try {
-    dispatch({ type: PRODUCT_LIST_REQUEST });
-    const { data } = await API.get('foods');
+export const listProducts =
+  (keyword = '', size=9, page=0) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: PRODUCT_LIST_REQUEST });
+      const { data } = await API.get(
+        `foods?name=${keyword}&size=${size}&page=${page}`
+      );
 
-    dispatch({
-      type: PRODUCT_LIST_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    dispatch({
-      type: PRODUCT_LIST_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+      dispatch({
+        type: PRODUCT_LIST_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: PRODUCT_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const getProductDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_DETAILS_REQUEST });
     const { data } = await API.get(`foods/${id}`);
-    console.log('1', id);
+
     dispatch({
       type: PRODUCT_DETAILS_SUCCESS,
       payload: data,
@@ -160,3 +164,31 @@ export const updateProduct = (id, product) => async (dispatch, getState) => {
     });
   }
 };
+
+// export const getProducts =
+//   (keyword = '', currentPage = 1, price, category, brand) =>
+//   async (dispatch) => {
+//     try {
+//       dispatch({ type: ALL_PRODUCTS_REQUEST });
+//       let link = `/api/products?keyword=${keyword}&page=${currentPage}&price[lte]=${price[1]}&price[gte]=${price[0]}`;
+//       if (category) {
+//         link = `/api/products?keyword=${keyword}&page=${currentPage}&price[lte]=${price[1]}&price[gte]=${price[0]}&category=${category}`;
+//       }
+//       if (brand) {
+//         link = `/api/products?keyword=${keyword}&page=${currentPage}&price[lte]=${price[1]}&price[gte]=${price[0]}&brand=${brand}`;
+//       }
+//       if (category && brand) {
+//         link = `/api/products?keyword=${keyword}&page=${currentPage}&price[lte]=${price[1]}&price[gte]=${price[0]}&category=${category}&brand=${brand}`;
+//       }
+//       const { data } = await axios.get(link);
+//       dispatch({
+//         type: ALL_PRODUCTS_SUCCESS,
+//         payload: data,
+//       });
+//     } catch (error) {
+//       dispatch({
+//         type: ALL_PRODUCTS_FAIL,
+//         payload: error.response.data.message,
+//       });
+//     }
+//   };

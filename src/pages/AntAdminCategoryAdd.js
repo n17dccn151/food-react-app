@@ -85,6 +85,7 @@ const AntAdminCategoryAdd = ({ history, match }) => {
       message.success('Added category name: ' + ressultCategory.name);
       console.log('ok' + ressultCategory.categoryId);
       dispatch({ type: CATEGORY_CREATE_RESET });
+      history.push('/admin/category');
     } else if (successCreateCategory === false) {
       message.warning('This is a warning message: ' + errorCreateCategory);
     }

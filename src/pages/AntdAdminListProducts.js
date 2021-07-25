@@ -30,11 +30,13 @@ const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
 const AntdAdminListProducts = ({ history, match }) => {
+  const keyword = match.params.keyword;
   const dispatch = useDispatch();
 
   const productList = useSelector((state) => state.productList);
   const { loading, error, products } = productList;
-
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const productDelete = useSelector((state) => state.productDelete);
   const {
     loading: loadingDelete,
@@ -54,16 +56,14 @@ const AntdAdminListProducts = ({ history, match }) => {
 
     if (successDelete === true) {
       message.success('Deleted product');
-      dispatch(listProducts());
+      dispatch(listProducts(keyword, pageSize, current - 1));
     } else if (successDelete === false) {
       message.warning('This is a warning message: ' + errorDelete);
     }
 
     dispatch(listProducts());
     message.success({ content: 'Loaded!', key, duration: 2 });
-  }, [dispatch, successDelete]);
-
-  const [current, setCurrent] = useState(1);
+  }, [dispatch, successDelete, keyword, pageSize, current]);
 
   console.log(products);
 
@@ -85,7 +85,7 @@ const AntdAdminListProducts = ({ history, match }) => {
       dataIndex: 'images',
       render: (images) => (
         <Image
-          width={150}
+          width={100}
           alt={{ ...images[0] }.url}
           src={{ ...images[0] }.url}
           preview={{}}
@@ -96,6 +96,7 @@ const AntdAdminListProducts = ({ history, match }) => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      width: '30%',
       render: (text) => <a>{text}</a>,
     },
     {
@@ -122,6 +123,7 @@ const AntdAdminListProducts = ({ history, match }) => {
       title: 'Quantity',
       dataIndex: 'quantity',
       key: 'quantity',
+      width: '9%',
       // className: 'column-money',
       // dataIndex: 'money',
       // align: 'right',
@@ -130,6 +132,7 @@ const AntdAdminListProducts = ({ history, match }) => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      width: '10%',
       render: (status) => {
         let color = status.length > 5 ? 'geekblue' : 'green';
         if (status === 'UNAVAILABLE') {
@@ -146,8 +149,9 @@ const AntdAdminListProducts = ({ history, match }) => {
       title: 'Action',
       dataIndex: '',
       key: 'x',
+      width: '10%',
       render: (_, record) =>
-        products.length >= 1 ? (
+        products.data.length >= 1 ? (
           <Popconfirm
             title='Sure to delete?'
             onConfirm={() => handleDelete(record.foodId)}>
@@ -161,8 +165,9 @@ const AntdAdminListProducts = ({ history, match }) => {
       title: 'Action',
       dataIndex: '',
       key: 'x',
+      width: '10%',
       render: (_, record) =>
-        products.length >= 1 ? (
+        products.data.length >= 1 ? (
           <Link to={`/admin/products/${record.foodId}/edit`}>
             <Tag color='green'>Edit</Tag>
           </Link>
@@ -170,22 +175,29 @@ const AntdAdminListProducts = ({ history, match }) => {
     },
   ];
 
-  const pageSize = 4;
-  const getData = (current, pageSize) => {
-    // Normally you should get the data from the server
-    return products.slice((current - 1) * pageSize, current * pageSize);
-  };
-  // Custom pagination component
+  function onPageChange(current, pageSize) {
+    console.log(current, pageSize);
+    setCurrent(current);
+    setPageSize(pageSize);
+  }
   const MyPagination = ({ total, onChange, current }) => {
     return (
       <Pagination
+        // responsive
         onChange={onChange}
         total={total}
         current={current}
         pageSize={pageSize}
+        showSizeChanger
+        onShowSizeChange={onShowSizeChange}
       />
     );
   };
+
+  function onShowSizeChange(current, pageSize) {
+    // console.log(current, pageSize);
+    // setPageSize(pageSize);
+  }
 
   return (
     !loading && (
@@ -199,9 +211,9 @@ const AntdAdminListProducts = ({ history, match }) => {
           <Row>
             <Col span={12}>
               <MyPagination
-                total={products.length}
+                total={products.totalItems}
                 current={current}
-                onChange={setCurrent}
+                onChange={onPageChange}
               />
             </Col>
 
@@ -223,7 +235,8 @@ const AntdAdminListProducts = ({ history, match }) => {
               ),
               rowExpandable: (record) => record.description !== '',
             }}
-            dataSource={getData(current, pageSize)}
+            scroll={{ x: '', y: 400 }}
+            dataSource={products.data}
             pagination={false}
           />
         </Content>

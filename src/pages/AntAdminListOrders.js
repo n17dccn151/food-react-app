@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { getListOrder } from '../actions/orderActions.js';
 import NumberFormat from 'react-number-format';
 import { getFullDate } from '../helper/getFullDate.js';
-import { DownOutlined } from '@ant-design/icons';
 import { updateOrder } from '../actions/orderActions';
 import { ORDER_UPDATE_RESET } from '../constants/orderConstants';
 import {
@@ -62,13 +61,6 @@ const AntAdminListOrders = () => {
 
   const key = 'updatable';
 
-  //   if (loading === true) {
-  //     message.loading({ content: 'Loading...', key });
-  //   }
-  //   if (loading === false) {
-  //     message.success({ content: 'Loaded!', key, duration: 2 });
-  //   }
-
   useEffect(() => {
     if (successUpdateOrder === true) {
       message.success('Updates order id: ' + ressultOrder.orderId);
@@ -78,6 +70,7 @@ const AntAdminListOrders = () => {
       message.warning('This is a warning message: ' + errorUpdateOrder);
     }
     dispatch(getListOrder());
+    message.success({ content: 'Loaded!', key, duration: 2 });
   }, [successUpdateOrder]);
 
   function handleButtonClick(e) {
@@ -96,31 +89,34 @@ const AntAdminListOrders = () => {
 
   const menu = (id, status) => (
     <Menu onClick={() => handleMenuClick(id, status)}>
-      <Menu.Item key='ORDERED' disabled={status === 'ORDERED'}>
+      <Menu.Item key='ORDERED'>
         <Popconfirm
           title='Are you sure？'
           okText='Yes'
           cancelText='No'
-          onConfirm={() => confirm(id, 'ORDERED')}>
+          onConfirm={() => confirm(id, 'ORDERED')}
+          disabled={status === 'ORDERED'}>
           <Tag color='#108ee9'>ORDERED</Tag>
         </Popconfirm>
         ;
       </Menu.Item>
 
-      <Menu.Item key='DELIVERIED' disabled={status === 'DELIVERIED'}>
+      <Menu.Item key='DELIVERIED'>
         <Popconfirm
           title='Are you sure？'
           okText='Yes'
           cancelText='No'
-          onConfirm={() => confirm(id, 'DELIVERIED')}>
+          onConfirm={() => confirm(id, 'DELIVERIED')}
+          disabled={status === 'DELIVERIED'}>
           <Tag color='#87d068'>DELIVERIED</Tag>
         </Popconfirm>
       </Menu.Item>
-      <Menu.Item key='CANCELLED' disabled={status === 'CANCELLED'}>
+      <Menu.Item key='CANCELLED'>
         <Popconfirm
           title='Are you sure？'
           okText='Yes'
           cancelText='No'
+          disabled={status === 'CANCELLED'}
           onConfirm={() => confirm(id, 'CANCELLED')}>
           <Tag color='#f50'>CANCELLED</Tag>
         </Popconfirm>
@@ -135,11 +131,12 @@ const AntAdminListOrders = () => {
       {
         title: 'Image',
         dataIndex: 'image',
+        width: '20%',
         render: (image) => (
           <Image width={150} alt={image} src={image} preview={{}} />
         ),
       },
-      { title: 'Name', dataIndex: 'name', key: 'nameFood' },
+      { title: 'Name', dataIndex: 'name', key: 'nameFood', width: '40%' },
       {
         title: 'Amount',
         dataIndex: 'amount',
@@ -149,6 +146,7 @@ const AntAdminListOrders = () => {
         title: 'Price',
         dataIndex: 'price',
         key: 'priceFood',
+        width: '30%',
         render: (_, record) =>
           orders.length >= 1 ? (
             <div>
@@ -194,6 +192,7 @@ const AntAdminListOrders = () => {
       title: 'ID',
       dataIndex: 'orderId',
       key: 'orderId',
+      width: '10%',
       // render: (text) => <a>{text}</a>,
     },
 
@@ -302,13 +301,14 @@ const AntAdminListOrders = () => {
     },
   ];
 
-  const pageSize = 4;
+  const [pageSize, setPageSize] = useState(5);
   const getData = (current, pageSize) => {
     // Normally you should get the data from the server
     return orders.slice((current - 1) * pageSize, current * pageSize);
   };
   // Custom pagination component
-  const MyPagination = ({ total, onChange, current }) => {
+  const MyPagination = ({ total, onChange, current, pageNumber }) => {
+    console.log(pageNumber);
     return (
       <Pagination
         onChange={onChange}
@@ -329,13 +329,13 @@ const AntAdminListOrders = () => {
           </Breadcrumb>
 
           <Row>
-            <Col span={12}>
+            {/* <Col span={12}>
               <MyPagination
                 total={orders.length}
                 current={current}
                 onChange={setCurrent}
               />
-            </Col>
+            </Col> */}
 
             <Col span={12}></Col>
           </Row>
@@ -349,10 +349,17 @@ const AntAdminListOrders = () => {
             //   ),
             //   rowExpandable: (record) => record.description !== '',
             // }}
-            dataSource={getData(current, pageSize)}
-            pagination={false}
+
+            // dataSource={getData(current, pageSize)}
+            // pagination={false}
+            dataSource={orders}
+            pagination={{
+              pageSizeOptions: ['10', '20', '30'],
+              showSizeChanger: true,
+              locale: { items_per_page: '' },
+            }}
             expandedRowRender={expandedRow}
-            scroll={{ x: '', y: 240 }}
+            scroll={{ x: '', y: 400 }}
           />
         </Content>
       </Layout>

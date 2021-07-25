@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Col, Divider, Badge, Button, Row } from 'antd';
+import { Card, Col, Divider, Badge, Button, Row, Rate } from 'antd';
 import NumberFormat from 'react-number-format';
 import { Link } from 'react-router-dom';
 import { ShoppingCartOutlined } from '@ant-design/icons';
@@ -38,13 +38,7 @@ const AntProduct = ({
               }
             />
             <Divider>
-              <Button
-                type='primary'
-                shape='round'
-                icon={<ShoppingCartOutlined />}
-                size='large'>
-                Add to cart
-              </Button>
+              <Rate allowHalf disabled defaultValue={rate === 0 ? 4.5 : rate} />
             </Divider>
           </Card>
         </Badge.Ribbon>

@@ -1,10 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
-import { createProduct } from '../actions/productActions.js';
 import NumberFormat from 'react-number-format';
-import { PRODUCT_CREATE_RESET } from '../constants/productConstants';
-import { IMAGE_ADD_IMAGE_RESET } from '../constants/imageConstants';
-import { createImage } from '../actions/imageAction.js';
+import { createUser } from '../actions/userActions';
+import { USER_REGISTER_RESET } from '../constants/userConstants';
+
 import {
   Button,
   Layout,
@@ -31,25 +30,14 @@ const { Option } = Select;
 const AntAdminUserAdd = ({ history, match }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userLogin);
-  const categoryList = useSelector((state) => state.categoryList);
-  const { loading, error, categories } = categoryList;
-  const imageCreate = useSelector((state) => state.imageCreate);
-  const {
-    loading: loadingCreateImage,
-    success: successCreateImage,
-    error: errorCreateImage,
-    images,
-  } = imageCreate;
 
-  const productCreate = useSelector((state) => state.productCreate);
+  const userCreate = useSelector((state) => state.userCreate);
   const {
-    loading: loadingCreateProduct,
-    success: successCreateProduct,
-    error: errorCreateProduct,
-    product: ressultProduct,
-  } = productCreate;
-  const [product, setProduct] = useState({});
-  const [imageRessult, setImageRessult] = useState({});
+    loading: loadingCreateUser,
+    success: successCreateUser,
+    error: errorCreateUser,
+    user: ressultUser,
+  } = userCreate;
 
   const { userInfo } = user;
 
@@ -71,7 +59,19 @@ const AntAdminUserAdd = ({ history, match }) => {
 
   const onFinish = (values) => {
     console.log(values);
+    dispatch(createUser(values.user));
   };
+
+  useEffect(() => {
+    if (successCreateUser === true) {
+      message.success('Added user name: ' + ressultUser.phone);
+      dispatch({ type: USER_REGISTER_RESET });
+      history.push('/admin/users');
+    } else if (successCreateUser === false) {
+      message.warning('This is a warning message: ' + errorCreateUser);
+    }
+  }, [successCreateUser]);
+
   return (
     <Content style={{ margin: '0 16px' }}>
       <Breadcrumb style={{ margin: '16px 0' }}>
@@ -126,9 +126,9 @@ const AntAdminUserAdd = ({ history, match }) => {
         </Form.Item>
 
         <Form.Item
-          name='confirm'
+          name={['user', 'confirm']}
           label='Confirm Password'
-          dependencies={['password']}
+          dependencies={['user', 'password']}
           hasFeedback
           rules={[
             {
@@ -137,7 +137,7 @@ const AntAdminUserAdd = ({ history, match }) => {
             },
             ({ getFieldValue }) => ({
               validator(_, value) {
-                if (!value || getFieldValue('password') === value) {
+                if (!value || getFieldValue(['user', 'password']) === value) {
                   return Promise.resolve();
                 }
                 return Promise.reject(
@@ -150,7 +150,7 @@ const AntAdminUserAdd = ({ history, match }) => {
         </Form.Item>
 
         <Form.Item
-          name={['user', 'roles']}
+          name={['user', 'role']}
           label='Roles'
           rules={[
             {
@@ -160,28 +160,19 @@ const AntAdminUserAdd = ({ history, match }) => {
           ]}>
           <Checkbox.Group>
             <Row>
-              <Col span={8}>
+              <Col span={12}>
                 <Checkbox
-                  value='USER'
+                  value='ROLE_USER'
                   style={{
                     lineHeight: '32px',
                   }}>
                   User
                 </Checkbox>
               </Col>
-              <Col span={8}>
+
+              <Col span={12}>
                 <Checkbox
-                  value='B'
-                  style={{
-                    lineHeight: '32px',
-                  }}
-                  disabled>
-                  B
-                </Checkbox>
-              </Col>
-              <Col span={8}>
-                <Checkbox
-                  value='ADMIN'
+                  value='ROLE_ADMIN'
                   style={{
                     lineHeight: '32px',
                   }}>

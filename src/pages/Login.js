@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-// import { Row, Col, Button, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loading from '../components/Loading';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-// import FormContainer from '../components/FormContainer';
 import { login } from '../actions/userActions.js';
 import {
   Form,
