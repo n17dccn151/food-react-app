@@ -27,6 +27,7 @@ import {
   userCreateReducer,
   userDeleteReducer,
   userDetailUpdateReducer,
+  userDetailCreateReducer,
 } from './reducers/userReducers.js';
 
 import { imageCreateReducer } from './reducers/imageReducer.js';
@@ -63,6 +64,7 @@ const reducer = combineReducers({
   userCreate: userCreateReducer,
   userDelete: userDeleteReducer,
   userDetailUpdate: userDetailUpdateReducer,
+  userDetailCreate: userDetailCreateReducer,
 
   orderMyList: orderMyListReducer,
   orderDetails: orderDetailsReducer,

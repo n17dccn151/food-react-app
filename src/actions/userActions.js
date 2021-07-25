@@ -28,6 +28,10 @@ import {
   USER_LIST_DETAILS_SUCCESS,
   USER_LIST_DETAILS_FAIL,
   USER_LIST_DETAILS_RESET,
+  USER_DETAIL_CREATE_FAIL,
+  USER_DETAIL_CREATE_SUCCESS,
+  USER_DETAIL_CREATE_REQUEST,
+  USER_DETAIL_CREATE_RESET,
 } from '../constants/userConstants.js';
 
 import { ORDER_MY_LIST_RESET } from '../constants/orderConstants';
@@ -320,3 +324,38 @@ export const updateUserDetail =
       });
     }
   };
+
+export const createUserDetail = (userDetail) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_DETAIL_CREATE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${userInfo.accessToken}`,
+      },
+    };
+
+    const { data } = await API.post(`customers/details`, userDetail, config);
+
+    dispatch({
+      type: USER_DETAIL_CREATE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_DETAIL_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};

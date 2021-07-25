@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import AntLoader from '../components/AntLoading.js';
 import { getUserDetailList } from '../actions/userActions.js';
 import NumberFormat from 'react-number-format';
-import { updateUserDetail } from '../actions/userActions';
+import { updateUserDetail, createUserDetail } from '../actions/userActions';
 import { USER_DETAIL_UPDATE_RESET } from '../constants/userConstants';
+import { USER_DETAIL_CREATE_RESET } from '../constants/userConstants';
 
 import {
   Row,
@@ -52,6 +53,14 @@ const UserInfo = ({ match, location, history }) => {
     userDetail: ressult,
   } = userDetailUpdate;
 
+  const userDetailCreate = useSelector((state) => state.userDetailCreate);
+  const {
+    loading: loadingCreate,
+    success: successCreate,
+    error: errorCreate,
+    userDetail: ressultCreate,
+  } = userDetailCreate;
+
   useEffect(() => {
     if (successUpdate === true) {
       message.success('Edit user detail id: ' + ressult.id);
@@ -63,12 +72,30 @@ const UserInfo = ({ match, location, history }) => {
     dispatch(getUserDetailList());
   }, [successUpdate]);
 
+  useEffect(() => {
+    if (successCreate === true) {
+      message.success('Create user detai ');
+
+      dispatch({ type: USER_DETAIL_CREATE_RESET });
+    } else if (successCreate === false) {
+      message.warning('This is a warning message: ' + errorUpdate);
+    }
+    dispatch(getUserDetailList());
+  }, [successCreate]);
+
   const onCreate = (values) => {
-    values.userDetail.id = edited.id;
-    values.userDetail.status = edited.status;
-    console.log('Received values of form: ', values);
-    console.log('Received values of form: ', values.userDetail);
-    dispatch(updateUserDetail(values.userDetail.id, values.userDetail));
+    if (typeof values.userDetail.id === 'undefined') {
+      values.userDetail.status = 'UNDEFAULT';
+      console.log(values);
+      dispatch(createUserDetail(values.userDetail));
+    } else {
+      values.userDetail.id = edited.id;
+      values.userDetail.status = edited.status;
+      console.log('Received values of form: ', values);
+      console.log('Received values of form: ', values.userDetail);
+      dispatch(updateUserDetail(values.userDetail.id, values.userDetail));
+    }
+
     setVisible(false);
   };
 
@@ -94,8 +121,8 @@ const UserInfo = ({ match, location, history }) => {
     return (
       <Modal
         visible={visible}
-        title='Edit user detail'
-        okText='Edit'
+        title='User detail'
+        okText='Ok'
         cancelText='Cancel'
         onCancel={onCancel}
         onOk={() => {
@@ -116,19 +143,19 @@ const UserInfo = ({ match, location, history }) => {
           fields={[
             {
               name: ['userDetail', 'firstName'],
-              value: edited.firstName,
+              value: typeof edited === 'undefined' ? '' : edited.firstName,
             },
             {
               name: ['userDetail', 'lastName'],
-              value: edited.lastName,
+              value: typeof edited === 'undefined' ? '' : edited.lastName,
             },
             {
               name: ['userDetail', 'phone'],
-              value: edited.phone,
+              value: typeof edited === 'undefined' ? '' : edited.phone,
             },
             {
               name: ['userDetail', 'address'],
-              value: edited.address,
+              value: typeof edited === 'undefined' ? '' : edited.address,
             },
           ]}>
           <Form.Item
@@ -137,7 +164,7 @@ const UserInfo = ({ match, location, history }) => {
             rules={[
               {
                 required: true,
-                message: 'Please input the title of collection!',
+                message: 'Please input the first name!',
               },
             ]}>
             <Input />
@@ -148,7 +175,7 @@ const UserInfo = ({ match, location, history }) => {
             rules={[
               {
                 required: true,
-                message: 'Please input the title of collection!',
+                message: 'Please input the last name!',
               },
             ]}>
             <Input />
@@ -159,7 +186,7 @@ const UserInfo = ({ match, location, history }) => {
             rules={[
               {
                 required: true,
-                message: 'Please input the title of collection!',
+                message: 'Please input the phone!',
               },
             ]}>
             <Input />
@@ -187,9 +214,20 @@ const UserInfo = ({ match, location, history }) => {
               <>{item}</>
             ))}
           </Descriptions.Item>
+          <Descriptions.Item label='User Info Detail'>
+            <Button
+              type='primary'
+              style={{ width: '100px' }}
+              onClick={() => {
+                handClicked();
+              }}>
+              Add
+            </Button>
+          </Descriptions.Item>
         </Descriptions>
         <br />
-        <Descriptions title='User Info Detail' layout='vertical'></Descriptions>
+
+        <Descriptions title='' layout='horizontal'></Descriptions>
 
         {details.map((item) => (
           <Descriptions

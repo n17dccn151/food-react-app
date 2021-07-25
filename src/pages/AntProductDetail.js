@@ -70,6 +70,7 @@ const AntProductDetail = ({ match, history }) => {
   }, [dispatch, productId, success]);
 
   function onChange(value) {
+    setQty(value);
     console.log('changed', value);
   }
   const Editor = ({ onChange, onSubmit, submitting, value }) => (

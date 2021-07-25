@@ -34,6 +34,10 @@ import {
   USER_DETAIL_UPDATE_SUCCESS,
   USER_DETAIL_UPDATE_FAIL,
   USER_DETAIL_UPDATE_RESET,
+  USER_DETAIL_CREATE_FAIL,
+  USER_DETAIL_CREATE_SUCCESS,
+  USER_DETAIL_CREATE_REQUEST,
+  USER_DETAIL_CREATE_RESET,
 } from '../constants/userConstants.js';
 
 export const userLoginReducer = (state = {}, action) => {
@@ -167,6 +171,22 @@ export const userDetailUpdateReducer = (state = { userDetail: {} }, action) => {
       return { loading: false, success: false, error: action.payload };
     case USER_DETAIL_UPDATE_RESET:
       return { userDetail: {} };
+    default:
+      return state;
+  }
+};
+
+export const userDetailCreateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_DETAIL_CREATE_REQUEST:
+      return { loading: true };
+    case USER_DETAIL_CREATE_SUCCESS:
+      return { loading: false, success: true, userDetail: action.payload };
+    case USER_DETAIL_CREATE_FAIL:
+      return { loading: false, success: false, error: action.payload };
+    case USER_DETAIL_CREATE_RESET:
+      return {};
+
     default:
       return state;
   }
