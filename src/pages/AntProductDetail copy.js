@@ -9,6 +9,7 @@ import {
   Row,
   Col,
   Typography,
+  Form,
   Button,
   Input,
   Rate,
@@ -18,8 +19,8 @@ import {
   Carousel,
 } from 'antd';
 import { CART_ADD_ITEM_RESET } from '../constants/cartConstants';
-const { Title, Paragraph  } = Typography;
-
+const { Title, Paragraph, Text, Link: LinkTy } = Typography;
+const { TextArea } = Input;
 
 const contentStyle = {
   color: '#fff',
@@ -97,7 +98,7 @@ const AntProductDetail = ({ match, history }) => {
 
   return loading === true ? (
     <AntLoader />
-  ) : loading === false ? (
+  ) : (
     <>
       <Row justify='space-around' align='middle'>
         <Col span={12} style={({ margin: '0 auto' }, { padding: '55px' })}>
@@ -163,8 +164,6 @@ const AntProductDetail = ({ match, history }) => {
         </Typography>
       </Space>
     </>
-  ) : (
-    <AntError />
   );
 };
 

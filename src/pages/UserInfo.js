@@ -1,31 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import AntLoader from '../components/AntLoading.js';
+
 import { getUserDetailList } from '../actions/userActions.js';
-import NumberFormat from 'react-number-format';
+
 import { updateUserDetail, createUserDetail } from '../actions/userActions';
 import { USER_DETAIL_UPDATE_RESET } from '../constants/userConstants';
 import { USER_DETAIL_CREATE_RESET } from '../constants/userConstants';
 
 import {
-  Row,
-  Col,
-  Image,
-  Space,
-  Typography,
   Button,
   Input,
-  Affix,
   Collapse,
-  Radio,
-  Tag,
   message,
   Descriptions,
   Layout,
   Modal,
-  Divider,
   Form,
-  InputNumber,
 } from 'antd';
 
 const { Panel } = Collapse;

@@ -80,13 +80,14 @@ const AntAdminProductEdit = ({ history, match }) => {
   // }, [dispatch, productId, product]);
 
   useEffect(() => {
-    if (!product.name || product.foodId != productId) {
+    if (typeof product === 'undefined') {
       console.log('2');
       dispatch(getProductDetails(productId));
     } else {
       console.log('3');
       console.log(product);
       setFileList(product.images);
+      console.log(fileList);
     }
   }, [dispatch, productId, product]);
 
@@ -232,7 +233,7 @@ const AntAdminProductEdit = ({ history, match }) => {
     // console.log(values);
   };
 
-  if (loadingListCategory === false && loadingDetail === false) {
+  if (loadingListCategory === false) {
     nameCategory = categories.find(
       (x) => x.categoryId === product.categoryId
     ).name;
@@ -344,7 +345,7 @@ const AntAdminProductEdit = ({ history, match }) => {
         <Breadcrumb.Item>Bill</Breadcrumb.Item>
       </Breadcrumb>
 
-      <Form
+      {/* <Form
         {...layout}
         name='nest-messages'
         onFinish={onFinish}
@@ -508,7 +509,7 @@ const AntAdminProductEdit = ({ history, match }) => {
             Submit
           </Button>
         </Form.Item>
-      </Form>
+      </Form> */}
     </Content>
   );
 };

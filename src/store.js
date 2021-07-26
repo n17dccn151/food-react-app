@@ -84,9 +84,9 @@ const initialState = {
     loading: true,
   },
 
-  productDetails: {
-    loading: true,
-  },
+  // productDetails: {
+  //   loading: true,
+  // },
 
   cart: {
     loading: true,

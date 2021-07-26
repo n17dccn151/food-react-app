@@ -1,15 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import React  from 'react';
 import { Result, Button } from 'antd';
-import { logout } from '../actions/userActions.js';
 import { SmileOutlined } from '@ant-design/icons';
 const CartFoundRessult = ({ match, location, history, test }) => {
-  const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(logout());
-  // }, [dispatch]);
+ 
 
   const goHome = () => {
     history.push('/');

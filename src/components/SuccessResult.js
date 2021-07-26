@@ -1,10 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
-import React, { useEffect, useState } from 'react';
+
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Result, Button } from 'antd';
-import { logout } from '../actions/userActions.js';
+
 const SuccessResult = ({ match, location, history, test }) => {
-  const dispatch = useDispatch();
+
 
   console.log(test);
   return (

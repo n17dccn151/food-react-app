@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+
 import { useDispatch, useSelector } from 'react-redux';
-import Message from '../components/Message.js';
+
 import AntLoader from '../components/AntLoading.js';
 import { addToCart } from '../actions/cartActions';
 import { userCart } from '../actions/cartActions.js';
@@ -11,18 +11,8 @@ import {
   Row,
   Col,
   Image,
-  Space,
-  Card,
-  Devider,
   Typography,
-  Comment,
-  Avatar,
-  Form,
   Button,
-  List,
-  Input,
-  Rate,
-  InputNumber,
   Checkbox,
   Affix,
   Tag,
@@ -30,11 +20,8 @@ import {
   message,
 } from 'antd';
 import { CART_ADD_ITEM_RESET } from '../constants/cartConstants';
-import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
-const { TextArea } = Input;
 
 const { Title } = Typography;
-const { Meta } = Card;
 
 const AntCart = ({ match, location, history }) => {
   const productId = match.params.id;

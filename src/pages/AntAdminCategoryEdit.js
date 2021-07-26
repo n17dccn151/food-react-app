@@ -6,26 +6,21 @@ import { IMAGE_ADD_IMAGE_RESET } from '../constants/imageConstants';
 import {
   Button,
   Layout,
-  Menu,
   Breadcrumb,
   Form,
   Input,
-  InputNumber,
   Upload,
   Select,
   message,
-  Progress,
   Modal,
 } from 'antd';
 import 'antd/dist/antd.css';
 
-import ImgCrop from 'antd-img-crop';
 import { createImage } from '../actions/imageAction';
-import API from '../api';
 import { getCategoryDetails } from '../actions/categoryActions.js';
 
 const { Content } = Layout;
-const { Option } = Select;
+
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {

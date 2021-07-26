@@ -1,6 +1,5 @@
 import React from 'react';
 import { Spin, Alert, Layout } from 'antd';
-const { Content } = Layout;
 const AntLoader = () => {
   return (
     <div style={{ margin: '100px auto' }}>

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import AntProduct from './AntProduct';
-import Loading from './Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../actions/productActions.js';
 import { withRouter } from 'react-router';
-import { Layout, Row, Divider, Space, Col, Pagination, Text } from 'antd';
+import { Layout, Divider, Space, Col, Pagination } from 'antd';
 import AntLoader from '../components/AntLoading';
 const AntProductList = ({ history, match }) => {
   const keyword = match.params.keyword;

@@ -1,27 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../actions/userActions.js';
 import SearchCustom from '../components/Search';
 import { Link } from 'react-router-dom';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { LinkContainer } from 'react-router-bootstrap';
-import {
-  Layout,
-  Menu,
-  Input,
-  Divider,
-  Space,
-  Col,
-  Row,
-  Image,
-  Badge,
-} from 'antd';
+import { Route } from 'react-router-dom';
+import CartItem from '../components/CartItem';
+import { Layout, Menu, Col, Row, Image, Badge } from 'antd';
 import { withRouter } from 'react-router';
 import logo from '../logo.svg';
 import {
   DesktopOutlined,
   PieChartOutlined,
-  FileOutlined,
   TeamOutlined,
   ShopOutlined,
   UserOutlined,
@@ -32,7 +21,7 @@ import {
 } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Sider } = Layout;
 const { SubMenu } = Menu;
 
 const Admin = ({ history, match }) => {
@@ -42,7 +31,6 @@ const Admin = ({ history, match }) => {
     setCollapsed(!collapsed);
   };
 
-  // const { Search } = Input;
   const { location } = history;
 
   const userLogin = useSelector((state) => state.userLogin);
@@ -120,11 +108,7 @@ const Admin = ({ history, match }) => {
           <>
             <Col span={8}>
               <Menu theme='dark' mode='horizontal'>
-                <Menu.Item key='cart' icon={<ShoppingOutlined />}>
-                  <Link to='/cart' />
-                  <Badge count={99} size='small'></Badge>
-                </Menu.Item>
-
+                <CartItem />
                 <Menu.Item key='noti' icon={<BellOutlined />}>
                   <Link to='/cart' />
                 </Menu.Item>
