@@ -120,7 +120,11 @@ const Admin = ({ history, match }) => {
                     My Order
                     <Link to='/myorder' />
                   </Menu.Item>
-                  <Menu.Item key='4'>User Info</Menu.Item>
+                  <Menu.Item key='4'>
+                    User Info
+                    <Link to='/userinfo' />
+                  </Menu.Item>
+
                   <Menu.Item key='5'>
                     Logout
                     <Link to='/logout' />

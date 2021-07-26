@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { getMyListOrder } from '../actions/orderActions.js';
 import NumberFormat from 'react-number-format';
 import { getFullDate } from '../helper/getFullDate.js';
-
+import { RATING_CREATE_RESET } from '../constants/ratingConstants';
+import { createRating } from '../actions/ratingActions';
 import {
   Image,
   Table,
@@ -15,6 +16,12 @@ import {
   Row,
   Col,
   Timeline,
+  Button,
+  Form,
+  Input,
+  Modal,
+  Rate,
+  message,
 } from 'antd';
 import 'antd/dist/antd.css';
 
@@ -26,18 +33,130 @@ const AntOrderInfo = () => {
   const orderMyList = useSelector((state) => state.orderMyList);
   const { loading, error, orders } = orderMyList;
   const [id, setId] = useState();
+  const [visible, setVisible] = useState(false);
+
+  const [editedRate, setEditedrate] = useState({});
+  const [editedProduct, setEditedProduct] = useState({});
+
+  const ratingCreate = useSelector((state) => state.ratingCreate);
+  const {
+    loading: loadingCreate,
+    success: successCreate,
+    error: errorCreate,
+    userDetail: ressultCreate,
+  } = ratingCreate;
+
+  useEffect(() => {
+    if (successCreate === true) {
+      message.success('Create user rating ');
+
+      dispatch({ type: RATING_CREATE_RESET });
+    } else if (successCreate === false) {
+      message.warning('This is a warning message: ' + errorCreate);
+    }
+  }, [successCreate]);
+
   useEffect(() => {
     dispatch(getMyListOrder());
   }, [dispatch]);
 
   console.log(orders);
 
+  const handClicked = (item) => {
+    // console.log(' checked', product);
+    // setEditedProduct(product);
+    setEditedrate(item);
+    setVisible(true);
+  };
+
   const [current, setCurrent] = useState(1);
 
   const key = 'updatable';
 
+  const onCreate = (values) => {
+    values.rate.foodId = editedRate.id;
+    console.log('Received values of form: ', values);
+    dispatch(createRating(values.rate));
+
+    
+    // if (typeof values.userDetail.id === 'undefined') {
+    //   values.userDetail.status = 'UNDEFAULT';
+    //   console.log(values);
+    //   dispatch(createUserDetail(values.userDetail));
+    // } else {
+    //   values.userDetail.id = edited.id;
+    //   values.userDetail.status = edited.status;
+    //   console.log('Received values of form: ', values);
+    //   console.log('Received values of form: ', values.userDetail);
+    //   dispatch(updateUserDetail(values.userDetail.id, values.userDetail));
+    // }
+
+    setVisible(false);
+  };
+
+  const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
+    const [form] = Form.useForm();
+    return (
+      <Modal
+        visible={visible}
+        title='User detail'
+        okText='Ok'
+        cancelText='Cancel'
+        onCancel={onCancel}
+        onOk={() => {
+          form
+            .validateFields()
+            .then((values) => {
+              form.resetFields();
+              onCreate(values);
+            })
+            .catch((info) => {
+              console.log('Validate Failed:', info);
+            });
+        }}>
+        <Form
+          form={form}
+          layout='vertical'
+          name='form_in_modal'
+          fields={[
+            {
+              name: ['rate', 'comment'],
+              value: '',
+            },
+            {
+              name: ['rate', 'rating'],
+              value: 5,
+            },
+          ]}>
+          <Form.Item
+            name={['rate', 'rating']}
+            label='Rate'
+            rules={[
+              {
+                required: true,
+                message: 'Please input the phone!',
+              },
+            ]}>
+            <Rate />
+          </Form.Item>
+
+          <Form.Item
+            name={['rate', 'comment']}
+            label='Comment'
+            rules={[
+              {
+                required: true,
+                message: 'Please input the phone!',
+              },
+            ]}>
+            <Input type='textarea' />
+          </Form.Item>
+        </Form>
+      </Modal>
+    );
+  };
+
   const expandedRow = (row) => {
-    console.log(row.orderFoods);
     const columns = [
       {
         title: 'Image',
@@ -67,6 +186,23 @@ const AntOrderInfo = () => {
             prefix={'$ '}
           />
         ),
+      },
+      {
+        title: '',
+        dataIndex: 'status',
+        key: 'x',
+        render: (_, record) =>
+          row.status === 'DELIVERIED' ? (
+            <div>
+              <Button
+                type='primary'
+                onClick={() => {
+                  handClicked(record);
+                }}>
+                Rating
+              </Button>
+            </div>
+          ) : null,
       },
     ];
 
@@ -224,6 +360,14 @@ const AntOrderInfo = () => {
             pagination={false}
             expandedRowRender={expandedRow}
             scroll={{ x: '', y: 400 }}
+          />
+
+          <CollectionCreateForm
+            visible={visible}
+            onCreate={onCreate}
+            onCancel={() => {
+              setVisible(false);
+            }}
           />
         </Content>
       </Layout>

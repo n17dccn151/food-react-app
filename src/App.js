@@ -25,6 +25,8 @@ import AntAdminUserEdit from './pages/AntAdminUserEdit';
 import AntAdminUserAdd from './pages/AntAdminUserAdd';
 import UserInfo from './pages/UserInfo';
 
+import SampleComponent from './test/SampleComponent';
+
 function App() {
   const userLogin = useSelector((state) => state.userLogin);
   const { loading, error, userInfo } = userLogin;
@@ -52,6 +54,8 @@ function App() {
           <Admin />
           <Layout className='site-layout'>
             <Switch>
+              <Route exact path='/test' component={SampleComponent} />
+
               <Route
                 exact
                 path='/admin/products'

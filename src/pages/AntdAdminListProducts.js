@@ -84,12 +84,14 @@ const AntdAdminListProducts = ({ history, match }) => {
       title: 'Image',
       dataIndex: 'images',
       render: (images) => (
-        <Image
-          width={100}
-          alt={{ ...images[0] }.url}
-          src={{ ...images[0] }.url}
-          preview={{}}
-        />
+        <div style={{ display: 'inline' }}>
+          <Image
+            width={100}
+            alt={{ ...images[0] }.url}
+            src={{ ...images[0] }.url}
+            preview={{}}
+          />
+        </div>
       ),
     },
     {

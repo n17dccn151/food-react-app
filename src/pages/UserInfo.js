@@ -68,7 +68,7 @@ const UserInfo = ({ match, location, history }) => {
 
       dispatch({ type: USER_DETAIL_CREATE_RESET });
     } else if (successCreate === false) {
-      message.warning('This is a warning message: ' + errorUpdate);
+      message.warning('This is a warning message: ' + errorCreate);
     }
     dispatch(getUserDetailList());
   }, [successCreate]);

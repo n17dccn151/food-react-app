@@ -40,6 +40,8 @@ import {
   orderUpdateReducer,
 } from './reducers/orderReducers.js';
 
+import { ratingCreateReducer } from './reducers/ratingReducers';
+
 const reducer = combineReducers({
   categoryList: categoryListReducer,
   categoryDetails: categoryDetailsReducer,
@@ -73,6 +75,8 @@ const reducer = combineReducers({
   orderUpdate: orderUpdateReducer,
 
   imageCreate: imageCreateReducer,
+
+  ratingCreate: ratingCreateReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')

@@ -10,16 +10,15 @@ import {
   Col,
   Typography,
   Button,
-  Input,
   Rate,
   InputNumber,
   Space,
   message,
   Carousel,
+  Descriptions,
 } from 'antd';
 import { CART_ADD_ITEM_RESET } from '../constants/cartConstants';
-const { Title, Paragraph  } = Typography;
-
+const { Title, Paragraph } = Typography;
 
 const contentStyle = {
   color: '#fff',
@@ -162,6 +161,23 @@ const AntProductDetail = ({ match, history }) => {
           </Paragraph>
         </Typography>
       </Space>
+
+      <Descriptions title='Rating'></Descriptions>
+
+      {product.rating.map((item) => (
+        <Descriptions title=''>
+          <Descriptions.Item label='UserName' span={3}>
+            {item.userName}
+          </Descriptions.Item>
+          <Descriptions.Item label='Rate' span={3}>
+            <Rate allowHalf disabled defaultValue={item.rating} />
+          </Descriptions.Item>
+          <Descriptions.Item label='Comment' span={3}>
+            {item.comment}
+          </Descriptions.Item>
+          <Descriptions title=''></Descriptions>
+        </Descriptions>
+      ))}
     </>
   ) : (
     <AntError />
