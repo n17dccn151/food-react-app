@@ -23,12 +23,13 @@ import {
   Row,
   Col,
   Divider,
+  Modal,
 } from 'antd';
 import 'antd/dist/antd.css';
 import { Link } from 'react-router-dom';
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
-
+const { confirm } = Modal;
 const AntdAdminListProducts = ({ history, match }) => {
   const keyword = match.params.keyword;
   const dispatch = useDispatch();

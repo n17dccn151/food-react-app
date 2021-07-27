@@ -16,9 +16,9 @@ const CartItem = () => {
   const cartDetail = useSelector((state) => state.cart);
   const { loading, error, cart } = cartDetail;
 
-  useEffect(() => {
-    dispatch(userCart());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(userCart());
+  // }, [dispatch]);
 
   return (
     loading === false && (

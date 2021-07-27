@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
-
 import { useDispatch, useSelector } from 'react-redux';
-
 import AntLoader from '../components/AntLoading.js';
 import { addToCart } from '../actions/cartActions';
 import { userCart } from '../actions/cartActions.js';
+import { CART_ADD_ITEM_RESET } from '../constants/cartConstants';
 import NumberFormat from 'react-number-format';
-
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import {
   Row,
   Col,
@@ -18,11 +17,10 @@ import {
   Tag,
   Divider,
   message,
+  Modal,
 } from 'antd';
-import { CART_ADD_ITEM_RESET } from '../constants/cartConstants';
-
+const { confirm } = Modal;
 const { Title } = Typography;
-
 const AntCart = ({ match, location, history }) => {
   const productId = match.params.id;
   const qty = location.search ? Number(location.search.split('=')[1]) : 1;
@@ -101,10 +99,28 @@ const AntCart = ({ match, location, history }) => {
     console.log('checkList', checkedList);
   };
 
+  const showConfirm = (item) => {
+    confirm({
+      title: 'Do you Want to delete these items?',
+      icon: <ExclamationCircleOutlined />,
+      content: '',
+      onOk() {
+        console.log('OK');
+        dispatch(addToCart(item.id, -1));
+        setCheckAll(false);
+        setCheckedList([]);
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
+
   const handleMinius = (item) => {
     dispatch(addToCart(item.id, -1));
     setCheckAll(false);
     setCheckedList([]);
+
     // console.log('submit---', item);
   };
 
@@ -131,14 +147,14 @@ const AntCart = ({ match, location, history }) => {
     }
   }, [dispatch1, productId, qty]);
 
-  if (loading) {
-    return <AntLoader />;
-  }
+  // if (loading) {
+  //   return <AntLoader />;
+  // }
 
   console.log(cart);
 
   return loading ? (
-    <></>
+    <AntLoader />
   ) : (
     <>
       <Row style={{ margin: '16px' }}>
@@ -161,7 +177,10 @@ const AntCart = ({ match, location, history }) => {
               <Row style={{ margin: '16px' }}>
                 <Col span={12}>
                   <Row>
-                    <Checkbox value={item} onChange={onGroupChangeItem}>
+                    <Checkbox
+                      value={item}
+                      onChange={onGroupChangeItem}
+                      disabled={item.amount === 0 ? true : false}>
                       <Title level={5}></Title>
                     </Checkbox>
                     <Image
@@ -174,6 +193,12 @@ const AntCart = ({ match, location, history }) => {
                 <Col span={12}>
                   <Title level={4}>{item.name}</Title>
 
+                  {item.histAmount === -1 ? (
+                    <Tag color='#87d068'>Updated</Tag>
+                  ) : (
+                    <></>
+                  )}
+
                   <NumberFormat
                     style={{ color: '#0050b3' }}
                     value={item.price}
@@ -182,34 +207,48 @@ const AntCart = ({ match, location, history }) => {
                     prefix={'$ '}
                   />
 
-                  <Row style={{ marginTop: '16px' }}>
-                    <Button
-                      size='small'
-                      type='primary'
-                      onClick={() => handleMinius(item)}>
-                      -
-                    </Button>
-                    <Divider type='vertical' />
+                  {item.amount === 0 ? (
+                    <Row style={{ marginTop: '16px' }}>
+                      <Tag color='#f50'>Out of stock</Tag>
+                    </Row>
+                  ) : (
+                    <></>
+                  )}
 
-                    <Tag color='blue' style={{ margin: 'initial' }}>
-                      {item.amount}
-                    </Tag>
+                  {item.amount !== 0 ? (
+                    <Row style={{ marginTop: '16px' }}>
+                      <Button
+                        disabled={item.amount === 0 ? true : false}
+                        size='small'
+                        type='primary'
+                        onClick={
+                          item.amount !== 1
+                            ? () => handleMinius(item)
+                            : () => showConfirm(item)
+                        }>
+                        -
+                      </Button>
+                      <Divider type='vertical' />
 
-                    <Divider type='vertical' />
-                    <Button
-                      type='primary'
-                      size='small'
-                      onClick={() => handlePlus(item)}>
-                      +
-                    </Button>
-                    {/* <InputNumber
-                      min={1}
-                      max={500}
-                      defaultValue={item.amount}
-                      onChange={() => onChange({ item })}
-                    /> */}
-                    {/* <Button type='primary'>Delete</Button> */}
-                  </Row>
+                      <Tag
+                        disabled={item.amount === 0 ? true : false}
+                        color='blue'
+                        style={{ margin: 'initial' }}>
+                        {item.amount}
+                      </Tag>
+
+                      <Divider type='vertical' />
+                      <Button
+                        disabled={item.amount === 0 ? true : false}
+                        type='primary'
+                        size='small'
+                        onClick={() => handlePlus(item)}>
+                        +
+                      </Button>
+                    </Row>
+                  ) : (
+                    <></>
+                  )}
                 </Col>
               </Row>
             </Checkbox.Group>
