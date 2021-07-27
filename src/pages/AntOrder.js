@@ -98,7 +98,8 @@ const AntOrder = ({ match, location, history }) => {
     <>
       <Row style={{ margin: '16px' }}>
         <Col span={6}>
-          <Affix offsetTop={10} style={{ margin: '0 auto' }}>
+          {/* style={{ margin: '0 auto' }} */}
+          <Affix offsetTop={10}>
             <Row style={{ margin: '16px' }}>
               <Title level={4}>Address</Title>
             </Row>
@@ -134,7 +135,7 @@ const AntOrder = ({ match, location, history }) => {
             </Row>
 
             <Collapse onChange={callback}>
-              <Panel header='Choice' key='1'>
+              <Panel header='More' key='1'>
                 <Radio.Group onChange={onChange1} value={checkedAddress}>
                   {details.map((item) => (
                     <Row>
@@ -162,7 +163,11 @@ const AntOrder = ({ match, location, history }) => {
             <Row style={{ margin: '16px' }}>
               <Col span={12}>
                 <Row>
-                  <Image width={200} src={item.image} />
+                  <Image
+                    width={200}
+                    src={item.image}
+                    preview={{ visible: false }}
+                  />
                 </Row>
               </Col>
               <Col span={12}>

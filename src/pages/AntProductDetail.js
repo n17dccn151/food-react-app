@@ -5,6 +5,7 @@ import NumberFormat from 'react-number-format';
 import AntLoader from '../components/AntLoading';
 import { addToCart } from '../actions/cartActions';
 import AntError from '../components/AntError';
+import { userCart } from '../actions/cartActions.js';
 import {
   Row,
   Col,
@@ -32,6 +33,7 @@ const AntProductDetail = ({ match, history }) => {
   const dispatch = useDispatch();
 
   const productDetails = useSelector((state) => state.productDetails);
+
   const { loading, error, product } = productDetails;
   const [qty, setQty] = useState(1);
   const cartCreate = useSelector((state) => state.cartCreate);
@@ -42,30 +44,9 @@ const AntProductDetail = ({ match, history }) => {
     error: errorCreate,
   } = cartCreate;
 
-  const [comment, setComment] = useState({
-    comments: [],
-    submitting: false,
-    value: '',
-  });
-
   const addToCartHandler = () => {
     dispatch(addToCart(match.params.id, qty));
-    // history.push(`/cartt/${match.params.id}?qty=${qty}`);
   };
-
-  // useEffect(() => {
-  //   if (success) {
-  //     message.success('Added to cart');
-  //     dispatch({ type: CART_ADD_ITEM_RESET });
-  //   } else if (success === false) {
-  //     message.warning(errorCreate);
-  //     dispatch({ type: CART_ADD_ITEM_RESET });
-  //   }
-
-  //   dispatch(getProductDetails(match.params.id));
-  // }, [dispatch, productId, success]);
-
-  //////////////////
 
   useEffect(() => {
     if (!product.name || product.foodId != productId) {
@@ -78,6 +59,7 @@ const AntProductDetail = ({ match, history }) => {
 
     if (success) {
       message.success('Added to cart');
+      dispatch(userCart());
       dispatch({ type: CART_ADD_ITEM_RESET });
     } else if (success === false) {
       message.warning(errorCreate);
@@ -100,7 +82,7 @@ const AntProductDetail = ({ match, history }) => {
     <>
       <Row justify='space-around' align='middle'>
         <Col span={12} style={({ margin: '0 auto' }, { padding: '55px' })}>
-          <Carousel autoplay>
+          <Carousel autoplay style={{ maxWidth: '300px' }}>
             {product.images.map((item) => (
               <div>
                 <h3 style={contentStyle}>
@@ -162,22 +144,24 @@ const AntProductDetail = ({ match, history }) => {
         </Typography>
       </Space>
 
-      <Descriptions title='Rating'></Descriptions>
+      <Space style={{ margin: '0 32px' }} direction='vertical'>
+        <Descriptions title='Rating'></Descriptions>
 
-      {product.rating.map((item) => (
-        <Descriptions title=''>
-          <Descriptions.Item label='UserName' span={3}>
-            {item.userName}
-          </Descriptions.Item>
-          <Descriptions.Item label='Rate' span={3}>
-            <Rate allowHalf disabled defaultValue={item.rating} />
-          </Descriptions.Item>
-          <Descriptions.Item label='Comment' span={3}>
-            {item.comment}
-          </Descriptions.Item>
-          <Descriptions title=''></Descriptions>
-        </Descriptions>
-      ))}
+        {product.rating.map((item) => (
+          <Descriptions title=''>
+            <Descriptions.Item label='UserName' span={3}>
+              {item.userName}
+            </Descriptions.Item>
+            <Descriptions.Item label='Rate' span={3}>
+              <Rate allowHalf disabled defaultValue={item.rating} />
+            </Descriptions.Item>
+            <Descriptions.Item label='Comment' span={3}>
+              {item.comment}
+            </Descriptions.Item>
+            <Descriptions title=''></Descriptions>
+          </Descriptions>
+        ))}
+      </Space>
     </>
   ) : (
     <AntError />

@@ -82,7 +82,7 @@ const AntCart = ({ match, location, history }) => {
   const handleSubmit = () => {
     if (checkAll || checkedList.length > 0) {
       localStorage.setItem('checkedList', JSON.stringify(checkedList));
-      history.push('/login?redirect=orders');
+      history.push('/orders');
 
       console.log('local', JSON.parse(localStorage.getItem('checkedList')));
       console.log('submit', checkedList);
@@ -164,7 +164,11 @@ const AntCart = ({ match, location, history }) => {
                     <Checkbox value={item} onChange={onGroupChangeItem}>
                       <Title level={5}></Title>
                     </Checkbox>
-                    <Image width={200} src={item.image} />
+                    <Image
+                      width={200}
+                      src={item.image}
+                      preview={{ visible: false }}
+                    />
                   </Row>
                 </Col>
                 <Col span={12}>
@@ -187,7 +191,9 @@ const AntCart = ({ match, location, history }) => {
                     </Button>
                     <Divider type='vertical' />
 
-                    <Tag color='blue'>{item.amount}</Tag>
+                    <Tag color='blue' style={{ margin: 'initial' }}>
+                      {item.amount}
+                    </Tag>
 
                     <Divider type='vertical' />
                     <Button
