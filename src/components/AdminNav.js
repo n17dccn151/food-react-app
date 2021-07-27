@@ -18,6 +18,7 @@ import {
   ShoppingOutlined,
   BellOutlined,
   LoginOutlined,
+  MessageOutlined,
 } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 
@@ -72,6 +73,10 @@ const Admin = ({ history, match }) => {
           User
           <Link to='/admin/users' />
         </Menu.Item>
+        <Menu.Item key='message' icon={<MessageOutlined />}>
+          Message
+          <Link to='/message' />
+        </Menu.Item>
         <Menu.Item key='6' icon={<DesktopOutlined />} onClick={checkLogout}>
           Log out
         </Menu.Item>
@@ -109,9 +114,13 @@ const Admin = ({ history, match }) => {
             <Col span={8}>
               <Menu theme='dark' mode='horizontal'>
                 <CartItem />
-                <Menu.Item key='noti' icon={<BellOutlined />}>
-                  <Link to='/cart' />
+                <Menu.Item key='message' icon={<MessageOutlined />}>
+                  <Link to='/message' />
                 </Menu.Item>
+                <Menu.Item key='noti' icon={<BellOutlined />}>
+                  <Link to='/' />
+                </Menu.Item>
+
                 {/* <Menu.Item key='account' icon={<UserOutlined />}>
               <Link to='/cartt' />
             </Menu.Item> */}

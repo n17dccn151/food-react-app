@@ -26,6 +26,9 @@ import AntAdminUserAdd from './pages/AntAdminUserAdd';
 import UserInfo from './pages/UserInfo';
 
 import SampleComponent from './test/SampleComponent';
+import MessageSockjs from './pages/MessageSockjs';
+import AdminDashboard from './pages/AdminDashboard';
+
 
 function App() {
   const userLogin = useSelector((state) => state.userLogin);
@@ -56,6 +59,19 @@ function App() {
             <Switch>
               <Route exact path='/test' component={SampleComponent} />
 
+              <Route
+                exact
+                path='/message'
+                component={isAdmin > -1 || isUser > -1 ? MessageSockjs : Login}
+              />
+
+              <Route
+                exact
+                path='/admin/dashboard'
+                component={
+                  isAdmin > -1 ? AdminDashboard : isUser > -1 ? AntError : Login
+                }
+              />
               <Route
                 exact
                 path='/admin/products'
