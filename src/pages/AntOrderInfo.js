@@ -78,7 +78,6 @@ const AntOrderInfo = () => {
     console.log('Received values of form: ', values);
     dispatch(createRating(values.rate));
 
-    
     // if (typeof values.userDetail.id === 'undefined') {
     //   values.userDetail.status = 'UNDEFAULT';
     //   console.log(values);

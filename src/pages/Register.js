@@ -27,7 +27,7 @@ import 'antd/dist/antd.css';
 const { Content } = Layout;
 const { Option } = Select;
 
-const AntAdminUserAdd = ({ history, match }) => {
+const Register = ({ history, match }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userLogin);
 
@@ -66,7 +66,7 @@ const AntAdminUserAdd = ({ history, match }) => {
     if (successCreateUser === true) {
       message.success('Added user name: ' + ressultUser.phone);
       dispatch({ type: USER_REGISTER_RESET });
-      history.push('/admin/users');
+      history.push('/login');
     } else if (successCreateUser === false) {
       message.warning('This is a warning message: ' + errorCreateUser);
     }
@@ -76,7 +76,7 @@ const AntAdminUserAdd = ({ history, match }) => {
     <Content style={{ margin: '0 16px' }}>
       <Breadcrumb style={{ margin: '16px 0' }}>
         <Breadcrumb.Item>User</Breadcrumb.Item>
-        <Breadcrumb.Item>Add</Breadcrumb.Item>
+        <Breadcrumb.Item>Register</Breadcrumb.Item>
       </Breadcrumb>
 
       <Form
@@ -150,40 +150,6 @@ const AntAdminUserAdd = ({ history, match }) => {
         </Form.Item>
 
         <Form.Item
-          name={['user', 'role']}
-          label='Roles'
-          rules={[
-            {
-              required: true,
-              message: 'Please input your Roles!',
-            },
-          ]}>
-          <Checkbox.Group>
-            <Row>
-              <Col span={12}>
-                <Checkbox
-                  value='ROLE_USER'
-                  style={{
-                    lineHeight: '32px',
-                  }}>
-                  User
-                </Checkbox>
-              </Col>
-
-              <Col span={12}>
-                <Checkbox
-                  value='ROLE_ADMIN'
-                  style={{
-                    lineHeight: '32px',
-                  }}>
-                  Admin
-                </Checkbox>
-              </Col>
-            </Row>
-          </Checkbox.Group>
-        </Form.Item>
-
-        <Form.Item
           wrapperCol={{
             span: 12,
             offset: 12,
@@ -197,4 +163,4 @@ const AntAdminUserAdd = ({ history, match }) => {
   );
 };
 
-export default AntAdminUserAdd;
+export default Register;

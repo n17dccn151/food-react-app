@@ -75,7 +75,7 @@ const Admin = ({ history, match }) => {
         </Menu.Item>
         <Menu.Item key='message' icon={<MessageOutlined />}>
           Message
-          <Link to='/message' />
+          <Link to='/admin/message' />
         </Menu.Item>
         <Menu.Item key='6' icon={<DesktopOutlined />} onClick={checkLogout}>
           Log out

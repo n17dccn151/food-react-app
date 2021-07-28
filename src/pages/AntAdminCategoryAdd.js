@@ -205,8 +205,8 @@ const AntAdminCategoryAdd = ({ history, match }) => {
   return (
     <Content style={{ margin: '0 16px' }}>
       <Breadcrumb style={{ margin: '16px 0' }}>
-        <Breadcrumb.Item>User</Breadcrumb.Item>
-        <Breadcrumb.Item>Bill</Breadcrumb.Item>
+        <Breadcrumb.Item>Category</Breadcrumb.Item>
+        <Breadcrumb.Item>Add</Breadcrumb.Item>
       </Breadcrumb>
 
       <Form

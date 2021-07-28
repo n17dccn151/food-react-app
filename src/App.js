@@ -28,7 +28,7 @@ import UserInfo from './pages/UserInfo';
 import SampleComponent from './test/SampleComponent';
 import MessageSockjs from './pages/MessageSockjs';
 import AdminDashboard from './pages/AdminDashboard';
-
+import Register from './pages/Register';
 
 function App() {
   const userLogin = useSelector((state) => state.userLogin);
@@ -63,6 +63,12 @@ function App() {
                 exact
                 path='/message'
                 component={isAdmin > -1 || isUser > -1 ? MessageSockjs : Login}
+              />
+
+              <Route
+                exact
+                path='/admin/message'
+                component={isAdmin > -1 ? MessageSockjs : Login}
               />
 
               <Route
@@ -209,6 +215,7 @@ function App() {
               <Route exact path='/search/:keyword' component={Home} />
 
               <Route path='/login' component={Login} />
+              <Route path='/register' component={Register} />
 
               <Route
                 path='/myorder'
