@@ -286,8 +286,9 @@ export const deleteUser = (id) => async (dispatch, getState) => {
 };
 
 export const updateUserDetail =
-  (id, userDetail) => async (dispatch, getState) => {
+  (id, userDetail, status) => async (dispatch, getState) => {
     try {
+      console.log('+++++++ssssssssssssssssssssss++', id, status);
       dispatch({
         type: USER_DETAIL_UPDATE_REQUEST,
       });
@@ -304,11 +305,17 @@ export const updateUserDetail =
         },
       };
 
-      const { data } = await API.put(
-        `customers/details/${id}`,
-        userDetail,
-        config
-      );
+      let url;
+      if (status !== '') {
+        console.log('+++++++++', id, status);
+        url = `customers/details/${id}?status=${status}`;
+      } else {
+        console.log('+++++++++2222', id, status);
+        url = `customers/details/${id}`;
+      }
+
+      console.log('+++++++++2222333333333333');
+      const { data } = await API.put(url, userDetail, config);
 
       dispatch({
         type: USER_DETAIL_UPDATE_SUCCESS,

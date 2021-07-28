@@ -73,7 +73,7 @@ const AntOrder = ({ match, location, history }) => {
     dispatch1(createOrder(orderFoods));
     console.log('submit', orderFoods);
   };
-
+  console.log('de', details);
   const dispatch = useDispatch();
   const cartDetail = useSelector((state) => state.cart);
   const { loading, error, cart } = cartDetail;
@@ -99,60 +99,60 @@ const AntOrder = ({ match, location, history }) => {
       <Row style={{ margin: '16px' }}>
         <Col span={6}>
           {/* style={{ margin: '0 auto' }} */}
-          <Affix offsetTop={10}>
-            <Row style={{ margin: '16px' }}>
-              <Title level={4}>Address</Title>
-            </Row>
+          {/* <Affix offsetTop={10}> */}
+          <Row style={{ margin: '16px' }}>
+            <Title level={4}>Address</Title>
+          </Row>
 
-            <Row style={{ margin: '16px' }}>
-              <Space direction='vertical'>
-                <Row>
-                  <Col span={12}>
-                    <Tag color='blue'>Name: </Tag>
-                  </Col>
-                  <Col span={12}>
-                    <Text>{checkedAddress.firstName} </Text>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <Tag color='blue'>Phone: </Tag>
-                  </Col>
-                  <Col span={12}>
-                    <Text>{checkedAddress.phone} </Text>
-                  </Col>
-                </Row>
+          <Row style={{ margin: '16px' }}>
+            <Space direction='vertical'>
+              <Row>
+                <Col span={12}>
+                  <Tag color='blue'>Name: </Tag>
+                </Col>
+                <Col span={12}>
+                  <Text>{checkedAddress.firstName} </Text>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <Tag color='blue'>Phone: </Tag>
+                </Col>
+                <Col span={12}>
+                  <Text>{checkedAddress.phone} </Text>
+                </Col>
+              </Row>
 
-                <Row>
-                  <Col span={12}>
-                    <Tag color='blue'>Address: </Tag>
-                  </Col>
-                  <Col span={12}>
-                    <Text>{checkedAddress.address} </Text>
-                  </Col>
-                </Row>
-              </Space>
-            </Row>
+              <Row>
+                <Col span={12}>
+                  <Tag color='blue'>Address: </Tag>
+                </Col>
+                <Col span={12}>
+                  <Text>{checkedAddress.address} </Text>
+                </Col>
+              </Row>
+            </Space>
+          </Row>
 
-            <Collapse onChange={callback}>
-              <Panel header='More' key='1'>
-                <Radio.Group onChange={onChange1} value={checkedAddress}>
-                  {details.map((item) => (
-                    <Row>
-                      <Radio value={item}>
-                        <Space direction='vertical'>
-                          <Text>{item.firstName} </Text>
-                          <Text>{item.phone} </Text>
-                          <Text>{item.address} </Text>
-                        </Space>
-                        <Divider></Divider>
-                      </Radio>
-                    </Row>
-                  ))}
-                </Radio.Group>
-              </Panel>
-            </Collapse>
-          </Affix>
+          <Collapse onChange={callback}>
+            <Panel header='More' key='1'>
+              <Radio.Group onChange={onChange1} value={checkedAddress}>
+                {details.map((item) => (
+                  <Row>
+                    <Radio value={item}>
+                      <Space direction='vertical'>
+                        <Text>{item.firstName} </Text>
+                        <Text>{item.phone} </Text>
+                        <Text>{item.address} </Text>
+                      </Space>
+                      <Divider></Divider>
+                    </Radio>
+                  </Row>
+                ))}
+              </Radio.Group>
+            </Panel>
+          </Collapse>
+          {/* </Affix> */}
         </Col>
 
         <Col span={14}>

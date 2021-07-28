@@ -193,11 +193,11 @@ const AntCart = ({ match, location, history }) => {
                 <Col span={12}>
                   <Title level={4}>{item.name}</Title>
 
-                  {item.histAmount === -1 ? (
+                  {/* {item.histAmount === -1 ? (
                     <Tag color='#87d068'>Updated</Tag>
                   ) : (
                     <></>
-                  )}
+                  )} */}
 
                   <NumberFormat
                     style={{ color: '#0050b3' }}

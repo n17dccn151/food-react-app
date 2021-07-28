@@ -17,6 +17,7 @@ import {
   message,
   Carousel,
   Descriptions,
+  Tag,
 } from 'antd';
 import { CART_ADD_ITEM_RESET } from '../constants/cartConstants';
 const { Title, Paragraph } = Typography;
@@ -114,22 +115,36 @@ const AntProductDetail = ({ match, history }) => {
             disabled
             defaultValue={product.rate === 0 ? 4.5 : product.rate}
           />
-          <Row style={{ marginTop: '16px' }}>
-            <InputNumber
-              min={1}
-              max={product.quantity}
-              defaultValue={1}
-              onChange={onChange}
-            />
-          </Row>
-          <Row>
-            <Col style={{ marginTop: '16px' }}>
-              <Button type='primary' onClick={addToCartHandler}>
-                Add to cart
-              </Button>
-            </Col>
-            <Col style={{ margin: '16px' }}></Col>
-          </Row>
+
+          {product.quantity !== 0 ? (
+            <>
+              <Row style={{ marginTop: '16px' }}>
+                <InputNumber
+                  min={1}
+                  max={product.quantity}
+                  defaultValue={1}
+                  onChange={onChange}
+                />
+              </Row>
+              <Row>
+                <Col style={{ marginTop: '16px' }}>
+                  <Button type='primary' onClick={addToCartHandler}>
+                    Add to cart
+                  </Button>
+                </Col>
+                <Col style={{ margin: '16px' }}></Col>
+              </Row>
+            </>
+          ) : (
+            <>
+              <Row>
+                <Col style={{ marginTop: '16px' }}>
+                  <Tag color='#f50'>Out of stock</Tag>
+                </Col>
+                <Col style={{ margin: '16px' }}></Col>
+              </Row>
+            </>
+          )}
         </Col>
       </Row>
       <Space style={{ margin: '32px' }}>

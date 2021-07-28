@@ -16,10 +16,11 @@ const CartItem = () => {
   const cartDetail = useSelector((state) => state.cart);
   const { loading, error, cart } = cartDetail;
 
-  // useEffect(() => {
-  //   dispatch(userCart());
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(userCart());
+  }, [dispatch]);
 
+  console.log('xxxxx', cart);
   return (
     loading === false && (
       <Menu.Item key='cart' icon={<ShoppingOutlined />}>

@@ -16,6 +16,7 @@ import {
   Layout,
   Modal,
   Form,
+  Tag,
 } from 'antd';
 
 const { Panel } = Collapse;
@@ -74,16 +75,19 @@ const UserInfo = ({ match, location, history }) => {
   }, [successCreate]);
 
   const onCreate = (values) => {
-    if (typeof values.userDetail.id === 'undefined') {
+    if (typeof edited === 'undefined') {
+      console.log('Create: ', values);
+
       values.userDetail.status = 'UNDEFAULT';
       console.log(values);
       dispatch(createUserDetail(values.userDetail));
     } else {
+      console.log('Upda: ', values);
       values.userDetail.id = edited.id;
       values.userDetail.status = edited.status;
       console.log('Received values of form: ', values);
       console.log('Received values of form: ', values.userDetail);
-      dispatch(updateUserDetail(values.userDetail.id, values.userDetail));
+      dispatch(updateUserDetail(values.userDetail.id, values.userDetail, ''));
     }
 
     setVisible(false);
@@ -93,6 +97,13 @@ const UserInfo = ({ match, location, history }) => {
     console.log(' checked', item);
     setEdited(item);
     setVisible(true);
+  };
+
+  const handClickedChangeStatus = (item) => {
+    dispatch(updateUserDetail(item.id, null, 'DEFAULT'));
+  };
+  const handClickedDelete = (item) => {
+    dispatch(updateUserDetail(item.id, null, 'DELETED'));
   };
 
   const dispatch = useDispatch();
@@ -223,31 +234,62 @@ const UserInfo = ({ match, location, history }) => {
           <Descriptions
             bordered
             column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}>
-            <>
-              <Descriptions.Item label='First name' span={3}>
-                {item.firstName}
-              </Descriptions.Item>
-              <Descriptions.Item label='Last name' span={3}>
-                {item.lastName}
-              </Descriptions.Item>
-              <Descriptions.Item label='Phone' span={3}>
-                {item.phone}
-              </Descriptions.Item>
+            {item.status !== 'DELETED' ? (
+              <>
+                <Descriptions.Item label='First name' span={3}>
+                  {item.firstName}
+                </Descriptions.Item>
+                <Descriptions.Item label='Last name' span={3}>
+                  {item.lastName}
+                </Descriptions.Item>
+                <Descriptions.Item label='Phone' span={3}>
+                  {item.phone}
+                </Descriptions.Item>
+                <Descriptions.Item label='Address' span={3}>
+                  {item.address}
+                </Descriptions.Item>
+                <Descriptions.Item label='Status' span={3}>
+                  <Tag color={item.status === 'DEFAULT' ? '#2db7f5' : 'green'}>
+                    {item.status !== 'DEFAULT' ? (
+                      <Button
+                        type='link'
+                        onClick={() => {
+                          handClickedChangeStatus(item);
+                        }}>
+                        Change
+                      </Button>
+                    ) : (
+                      <Button disabled type='link'>
+                        |
+                      </Button>
+                    )}
 
-              <Descriptions.Item label='Address' span={3}>
-                {item.address}
-              </Descriptions.Item>
-              <Descriptions.Item label='' span={3}>
-                <Button
-                  type='link'
-                  onClick={() => {
-                    handClicked(item);
-                  }}>
-                  Edit
-                </Button>
-              </Descriptions.Item>
-              <Descriptions.Item label='' span={3}></Descriptions.Item>
-            </>
+                    {item.status}
+                  </Tag>
+                </Descriptions.Item>
+
+                <Descriptions.Item label='' span={3}>
+                  <Button
+                    type='link'
+                    onClick={() => {
+                      handClicked(item);
+                    }}>
+                    Edit
+                  </Button>
+                  <Button
+                    danger
+                    type='link'
+                    onClick={() => {
+                      handClickedDelete(item);
+                    }}>
+                    Delete
+                  </Button>
+                </Descriptions.Item>
+                <Descriptions.Item label='' span={3}></Descriptions.Item>
+              </>
+            ) : (
+              <></>
+            )}
           </Descriptions>
         ))}
 

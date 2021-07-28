@@ -20,7 +20,9 @@ const AntProduct = ({
   return (
     <Link to={`/products/${foodId}`}>
       <Col span={8}>
-        <Badge.Ribbon text='Hot' color='cyan'>
+        <Badge.Ribbon
+          text={quantity !== 0 ? 'Hot' : 'Out of stock'}
+          color={quantity !== 0 ? 'cyan' : '#f50'}>
           <Card
             hoverable
             style={{ width: 240 }}
