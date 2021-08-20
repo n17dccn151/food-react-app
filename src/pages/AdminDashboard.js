@@ -146,7 +146,7 @@ const AdminDashboard = () => {
 
       <SockJsClient
         ref={refSockJs}
-        url='http://localhost:8080/gs-guide-websocket'
+        url='https://webhook-dialog-flow-spring-boo.herokuapp.com/gs-guide-websocket'
         topics={['/topic/dasboards']}
         onMessage={(msg) => {
           onMessage(msg.content);

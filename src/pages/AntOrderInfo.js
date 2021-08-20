@@ -308,7 +308,7 @@ const AntOrderInfo = () => {
     },
   ];
 
-  const pageSize = 4;
+  const pageSize = 10;
   const getData = (current, pageSize) => {
     // Normally you should get the data from the server
     return orders.slice((current - 1) * pageSize, current * pageSize);

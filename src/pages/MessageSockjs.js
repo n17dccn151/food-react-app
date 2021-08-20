@@ -1,37 +1,19 @@
 import React, { useRef, useState } from 'react';
 import SockJsClient from 'react-stomp';
 import { useSelector } from 'react-redux';
-import { Comment, Avatar, Form, Button, List, Input, Affix } from 'antd';
+import { Comment, Avatar, Form, List, Affix } from 'antd';
 import moment from 'moment';
 import UserInfo from './UserInfo';
+import 'react-chat-elements/dist/main.css';
 
-const { TextArea } = Input;
+import { MessageBox } from 'react-chat-elements';
+import { ChatItem } from 'react-chat-elements';
+import { MessageList } from 'react-chat-elements';
+import { SideBar } from 'react-chat-elements';
+import { Navbar } from 'react-chat-elements';
+import { Input } from 'react-chat-elements';
+import { Button } from 'react-chat-elements';
 
-const CommentList = ({ comments }) => (
-  <List
-    dataSource={comments}
-    header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}
-    itemLayout='horizontal'
-    renderItem={(props) => <Comment {...props} />}
-  />
-);
-
-const Editor = ({ onChange, onSubmit, submitting, value }) => (
-  <>
-    <Form.Item>
-      <TextArea rows={4} onChange={onChange} value={value} />
-    </Form.Item>
-    <Form.Item>
-      <Button
-        htmlType='submit'
-        loading={submitting}
-        onClick={onSubmit}
-        type='primary'>
-        Send
-      </Button>
-    </Form.Item>
-  </>
-);
 
 const MessageSockjs = () => {
   const userLogin = useSelector((state) => state.userLogin);
@@ -40,21 +22,33 @@ const MessageSockjs = () => {
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
   const refSockJs = useRef(null);
+  const inputRef = useRef();
+  const [messages, setMessages] = useState([]);
 
   const handleOnConnect = () => {
     console.log('connect');
   };
 
-  const handleButonClick = () => {};
-
   const handleSubmit = () => {
+    console.log('submit', value);
     if (!value) {
       return;
     }
 
+    // refSockJs.current.sendMessage(
+    //   '/app/hello',
+    //   JSON.stringify(`${userInfo.phone}_${value}`)
+    // );
+    let message = {
+      name: `${userInfo.id}`,
+      message: `${value}`,
+      urlImage: [],
+      date: new Date(),
+    };
     refSockJs.current.sendMessage(
-      '/app/hello',
-      JSON.stringify(`${userInfo.phone}_${value}`)
+      `/app/sendMessageToAdmin/${userInfo.id}`,
+
+      JSON.stringify(message)
     );
   };
 
@@ -62,64 +56,92 @@ const MessageSockjs = () => {
     setValue(e.target.value);
   };
 
-  const getContent = (content) => {
-    let index = content.indexOf('_');
-    let newString = content.substring(index, content.length());
-    return newString;
-  };
+  const onMessageR = (content) => {
+    console.log('okeR', content);
+    // setSubmitting(true);
 
-  const onMessage = (content) => {
-    setSubmitting(true);
-
-    const authorRe = content.split('_')[0];
-    const contentRe = content.replace(authorRe + '_', '');
-    // console.log('oke', getContent(content));
+    // const authorRe = content.split('_')[0];
+    // const contentRe = content.replace(authorRe + '_', '');
+    // // console.log('oke', getContent(content));
     setTimeout(() => {
-      setValue('');
-      setSubmitting(false);
-      setComments([
-        ...comments,
+      console.log(value);
+      inputRef.current.clear();
+      setMessages([
+        ...messages,
         {
-          author: authorRe,
-          avatar:
-            'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-          content: <p>{contentRe}</p>,
-          datetime: moment().fromNow(),
+          position: 'right',
+          type: 'text',
+          text: content.message,
+          date: Date.parse(content.date),
+          data: {
+            uri: 'https://firebasestorage.googleapis.com/v0/b/nas-app-77.appspot.com/o/01d55bcc-5c36-4add-a258-28aef5052d28jpg?alt=media',
+          },
         },
       ]);
     }, 10);
   };
 
+  const onMessageL = (content) => {
+    console.log('okeL', content);
+    setTimeout(() => {
+      console.log(value);
+      inputRef.current.clear();
+      setMessages([
+        ...messages,
+        {
+          position: 'left',
+          type: 'text',
+          text: content.message,
+          date: Date.parse(content.date),
+          data: {
+            uri: 'https://firebasestorage.googleapis.com/v0/b/nas-app-77.appspot.com/o/01d55bcc-5c36-4add-a258-28aef5052d28jpg?alt=media',
+          },
+        },
+      ]);
+    }, 10);
+  };
   return (
     <div>
-      <div style={{ height: '200px' }}>
-        {comments.length > 0 && <CommentList comments={comments} />}
+      <div style={{ height: '500px' }}>
+        <MessageList
+          className='message-list'
+          lockable={true}
+          toBottomHeight={'100%'}
+          dataSource={messages}
+        />
       </div>
 
-      <Affix offsetTop={400}>
-        <Comment
-          avatar={
-            <Avatar
-              src='https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
-              alt='Han Solo'
-            />
-          }
-          content={
-            <Editor
-              onChange={handleChange}
-              onSubmit={handleSubmit}
-              submitting={submitting}
-              value={value}
-            />
-          }
-        />
-      </Affix>
+      <Input
+        ref={inputRef}
+        placeholder='Type here...'
+        multiline={false}
+        onChange={handleChange}
+        rightButtons={
+          <Button
+            color='white'
+            backgroundColor='black'
+            text='Send'
+            onClick={handleSubmit}
+          />
+        }
+      />
+
       <SockJsClient
         ref={refSockJs}
-        url='http://localhost:8080/gs-guide-websocket'
-        topics={['/topic/greetings']}
+        url='https://webhook-dialog-flow-spring-boo.herokuapp.com/gs-guide-websocket'
+        topics={[`/topic/reciveMessage/${userInfo.id}`]}
         onMessage={(msg) => {
-          onMessage(msg.content);
+          onMessageL(msg);
+        }}
+        onConnect={handleOnConnect}
+      />
+
+      <SockJsClient
+        ref={refSockJs}
+        url='https://webhook-dialog-flow-spring-boo.herokuapp.com/gs-guide-websocket'
+        topics={[`/topic/reciveMySelftMessageToAdmin/${userInfo.id}`]}
+        onMessage={(msg) => {
+          onMessageR(msg);
         }}
         onConnect={handleOnConnect}
       />

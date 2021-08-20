@@ -40,7 +40,6 @@ const Admin = ({ history, match }) => {
     dispatch(logout());
     history.push('/login');
   };
-  console.log('aaaaaaaa', userLogin);
 
   return location.pathname.split('/')[1] === 'admin' ? (
     <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
@@ -52,7 +51,7 @@ const Admin = ({ history, match }) => {
         defaultSelectedKeys={[`${location.pathname.split('/')[2]}`]}
         mode='inline'>
         <Menu.Item key='dashboard' icon={<PieChartOutlined />}>
-          Dashboald
+          Dashboard
           <Link to='/admin/dashboard' />
         </Menu.Item>
 
@@ -112,8 +111,9 @@ const Admin = ({ history, match }) => {
         {userLogin.userInfo != null ? (
           <>
             <Col span={8}>
-              <Menu theme='dark' mode='horizontal'>
+              <Menu theme='dark' mode='horizontal' selectedKeys=''>
                 <CartItem />
+
                 <Menu.Item key='message' icon={<MessageOutlined />}>
                   <Link to='/message' />
                 </Menu.Item>

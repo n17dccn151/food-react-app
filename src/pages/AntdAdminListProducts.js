@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
-
+import AntError from '../components/AntError.js';
+import AntLoader from '../components/AntLoading.js';
 import {
   listProducts,
   deleteProduct,
@@ -62,9 +63,9 @@ const AntdAdminListProducts = ({ history, match }) => {
       message.warning('This is a warning message: ' + errorDelete);
     }
 
-    dispatch(listProducts());
-    message.success({ content: 'Loaded!', key, duration: 2 });
-  }, [dispatch, successDelete, keyword, pageSize, current]);
+    dispatch(listProducts(keyword, pageSize, current - 1));
+    // message.success({ content: 'Loaded!', key, duration: 2 });
+  }, [dispatch, successDelete, pageSize, current]);
 
   console.log(products);
 
@@ -73,12 +74,6 @@ const AntdAdminListProducts = ({ history, match }) => {
     dispatch(deleteProduct(id));
     // setPreviewVisible(false);
   };
-
-  // if (loading) {
-  //   message.loading({ content: 'Loading...', key });
-  // } else {
-  //   message.success({ content: 'Loaded!', key, duration: 2 });
-  // }
 
   const columns = [
     {
@@ -202,49 +197,51 @@ const AntdAdminListProducts = ({ history, match }) => {
     // setPageSize(pageSize);
   }
 
-  return (
-    !loading && (
-      <Layout className='site-layout'>
-        <Content style={{ margin: '0 16px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>Admin</Breadcrumb.Item>
-            <Breadcrumb.Item>Product</Breadcrumb.Item>
-          </Breadcrumb>
+  return loading ? (
+    <AntLoader />
+  ) : error ? (
+    <AntError />
+  ) : (
+    <Layout className='site-layout'>
+      <Content style={{ margin: '0 16px' }}>
+        <Breadcrumb style={{ margin: '16px 0' }}>
+          <Breadcrumb.Item>Admin</Breadcrumb.Item>
+          <Breadcrumb.Item>Product</Breadcrumb.Item>
+        </Breadcrumb>
 
-          <Row>
-            <Col span={12}>
-              <MyPagination
-                total={products.totalItems}
-                current={current}
-                onChange={onPageChange}
-              />
-            </Col>
+        <Row>
+          <Col span={12}>
+            <MyPagination
+              total={products.totalItems}
+              current={current}
+              onChange={onPageChange}
+            />
+          </Col>
 
-            <Col span={12}>
-              <Divider orientation='right'>
-                <Link to='/admin/products/add'>
-                  <Button type='primary'>Add Product</Button>
-                </Link>
-              </Divider>
-            </Col>
-          </Row>
+          <Col span={12}>
+            <Divider orientation='right'>
+              <Link to='/admin/products/add'>
+                <Button type='primary'>Add Product</Button>
+              </Link>
+            </Divider>
+          </Col>
+        </Row>
 
-          <Table
-            columns={columns}
-            rowKey='foodId'
-            expandable={{
-              expandedRowRender: (record) => (
-                <p style={{ margin: 0 }}>{record.description}</p>
-              ),
-              rowExpandable: (record) => record.description !== '',
-            }}
-            scroll={{ x: '', y: 400 }}
-            dataSource={products.data}
-            pagination={false}
-          />
-        </Content>
-      </Layout>
-    )
+        <Table
+          columns={columns}
+          rowKey='foodId'
+          expandable={{
+            expandedRowRender: (record) => (
+              <p style={{ margin: 0 }}>{record.description}</p>
+            ),
+            rowExpandable: (record) => record.description !== '',
+          }}
+          scroll={{ x: '', y: 370 }}
+          dataSource={products.data}
+          pagination={false}
+        />
+      </Content>
+    </Layout>
   );
 };
 

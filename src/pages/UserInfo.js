@@ -276,14 +276,19 @@ const UserInfo = ({ match, location, history }) => {
                     }}>
                     Edit
                   </Button>
-                  <Button
-                    danger
-                    type='link'
-                    onClick={() => {
-                      handClickedDelete(item);
-                    }}>
-                    Delete
-                  </Button>
+
+                  {item.status !== 'DEFAULT' ? (
+                    <Button
+                      danger
+                      type='link'
+                      onClick={() => {
+                        handClickedDelete(item);
+                      }}>
+                      Delete
+                    </Button>
+                  ) : (
+                    <></>
+                  )}
                 </Descriptions.Item>
                 <Descriptions.Item label='' span={3}></Descriptions.Item>
               </>

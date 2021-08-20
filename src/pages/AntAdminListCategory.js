@@ -2,6 +2,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { listCategories, deleteCategory } from '../actions/categoryActions.js';
 import { CATEGORY_DELETE_RESET } from '../constants/categoryConstants';
+
+import AntError from '../components/AntError.js';
+import AntLoader from '../components/AntLoading.js';
 import {
   Image,
   Table,
@@ -61,11 +64,11 @@ const AntAdminListCategory = () => {
     }
 
     dispatch(listCategories());
-    message.success({ content: 'Loaded!', key, duration: 2 });
+    // message.success({ content: 'Loaded!', key, duration: 2 });
   }, [dispatch, successDelete]);
 
   const handleDelete = (id) => {
-    console.log('oke delet' + id);
+    // console.log('oke delet' + id);
     dispatch(deleteCategory(id));
     // setPreviewVisible(false);
   };
@@ -141,55 +144,57 @@ const AntAdminListCategory = () => {
     );
   };
 
-  return (
-    !loadingListCategory && (
-      <Layout className='site-layout'>
-        <Content style={{ margin: '0 16px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>Admin</Breadcrumb.Item>
-            <Breadcrumb.Item>Category</Breadcrumb.Item>
-          </Breadcrumb>
+  return loadingListCategory ? (
+    <AntLoader />
+  ) : errorCategories ? (
+    <AntError />
+  ) : (
+    <Layout className='site-layout'>
+      <Content style={{ margin: '0 16px' }}>
+        <Breadcrumb style={{ margin: '16px 0' }}>
+          <Breadcrumb.Item>Admin</Breadcrumb.Item>
+          <Breadcrumb.Item>Category</Breadcrumb.Item>
+        </Breadcrumb>
 
-          <Row>
-            <Col span={12}>
-              {/* <MyPagination
+        <Row>
+          <Col span={12}>
+            {/* <MyPagination
                 total={categories.length}
                 current={current}
                 onChange={setCurrent}
               /> */}
-            </Col>
+          </Col>
 
-            <Col span={12}>
-              <Divider orientation='right'>
-                <Link to='/admin/category/add'>
-                  <Button type='primary'>Add Category</Button>
-                </Link>
-              </Divider>
-            </Col>
-          </Row>
+          <Col span={12}>
+            <Divider orientation='right'>
+              <Link to='/admin/category/add'>
+                <Button type='primary'>Add Category</Button>
+              </Link>
+            </Divider>
+          </Col>
+        </Row>
 
-          <Table
-            columns={columns}
-            rowKey='categoryId'
-            expandable={{
-              expandedRowRender: (record) => (
-                <p style={{ margin: 0 }}>{record.description}</p>
-              ),
-              rowExpandable: (record) => record.description !== '',
-            }}
-            // dataSource={getData(current, pageSize)}
-            // pagination={false}
-            dataSource={categories}
-            pagination={{
-              pageSizeOptions: ['10', '20', '30'],
-              showSizeChanger: true,
-              locale: { items_per_page: '' },
-            }}
-            scroll={{ x: '', y: 400 }}
-          />
-        </Content>
-      </Layout>
-    )
+        <Table
+          columns={columns}
+          rowKey='categoryId'
+          expandable={{
+            expandedRowRender: (record) => (
+              <p style={{ margin: 0 }}>{record.description}</p>
+            ),
+            rowExpandable: (record) => record.description !== '',
+          }}
+          // dataSource={getData(current, pageSize)}
+          // pagination={false}
+          dataSource={categories}
+          pagination={{
+            pageSizeOptions: ['10', '20', '30'],
+            showSizeChanger: true,
+            locale: { items_per_page: '' },
+          }}
+          scroll={{ x: '', y: 400 }}
+        />
+      </Content>
+    </Layout>
   );
 };
 

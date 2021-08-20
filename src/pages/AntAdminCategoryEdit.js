@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { updateCategory } from '../actions/categoryActions.js';
-import { CATEGORY_CREATE_RESET } from '../constants/categoryConstants';
+import { CATEGORY_UPDATE_RESET } from '../constants/categoryConstants';
 import { IMAGE_ADD_IMAGE_RESET } from '../constants/imageConstants';
 import {
   Button,
@@ -20,7 +20,6 @@ import { createImage } from '../actions/imageAction';
 import { getCategoryDetails } from '../actions/categoryActions.js';
 
 const { Content } = Layout;
-
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -112,7 +111,7 @@ const AntAdminCategoryEdit = ({ history, match }) => {
     if (successUpdateCategory === true) {
       message.success('Edit category id: ' + ressultCategory.categoryId);
       console.log('ok' + ressultCategory.categoryId);
-      dispatch({ type: CATEGORY_CREATE_RESET });
+      dispatch({ type: CATEGORY_UPDATE_RESET });
       history.push('/admin/category');
     } else if (successUpdateCategory === false) {
       message.warning('This is a warning message: ' + errorUpdateCategory);

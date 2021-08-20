@@ -73,13 +73,8 @@ export const login = (phone, password) => async (dispatch) => {
 
 export const logout = () => (dispatch) => {
   localStorage.removeItem('userInfo');
-  localStorage.removeItem('cartItems');
-  localStorage.removeItem('paymentMethod');
-  localStorage.removeItem('shippingAddress');
+
   dispatch({ type: USER_LOGOUT });
-  dispatch({ type: USER_DETAILS_RESET });
-  dispatch({ type: ORDER_MY_LIST_RESET });
-  dispatch({ type: USER_LIST_RESET });
 };
 
 export const listUsers = () => async (dispatch, getState) => {
@@ -231,7 +226,7 @@ export const createUser = (user) => async (dispatch, getState) => {
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        Authorization: `Bearer ${userInfo.accessToken}`,
+        // Authorization: `Bearer ${userInfo.accessToken}`,
       },
     };
 

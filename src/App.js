@@ -27,6 +27,7 @@ import UserInfo from './pages/UserInfo';
 
 import SampleComponent from './test/SampleComponent';
 import MessageSockjs from './pages/MessageSockjs';
+import AdminMessageSockjs from './pages/AdminMessageSockjs';
 import AdminDashboard from './pages/AdminDashboard';
 import Register from './pages/Register';
 
@@ -68,7 +69,7 @@ function App() {
               <Route
                 exact
                 path='/admin/message'
-                component={isAdmin > -1 ? MessageSockjs : Login}
+                component={isAdmin > -1 ? AdminMessageSockjs : Login}
               />
 
               <Route

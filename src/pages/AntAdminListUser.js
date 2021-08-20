@@ -47,7 +47,7 @@ const AntAdminListUser = () => {
     }
 
     dispatch(listUsers());
-    message.success({ content: 'Loaded!', key, duration: 2 });
+    // message.success({ content: 'Loaded!', key, duration: 2 });
   }, [dispatch, successDelete]);
 
   console.log('', loading);
@@ -204,7 +204,7 @@ const AntAdminListUser = () => {
             showSizeChanger: true,
             locale: { items_per_page: '' },
           }}
-          scroll={{ x: '', y: 400 }}
+          scroll={{ x: '', y: 360 }}
         />
       </Content>
     </Layout>

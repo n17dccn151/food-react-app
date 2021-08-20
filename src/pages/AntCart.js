@@ -37,8 +37,7 @@ const AntCart = ({ match, location, history }) => {
   } = cartCreate;
 
   const onGroupChangeItem = (e) => {
-    console.log('item', e.target.value);
-    console.log('item', e.target.checked);
+    
     if (e.target.checked) {
       setCheckAll(false);
       setCheckedList([...checkedList, e.target.value]);
@@ -49,7 +48,7 @@ const AntCart = ({ match, location, history }) => {
           return e.id;
         })
         .indexOf(e.target.value.id);
-      console.log('index', index);
+      
       if (index > -1) {
         // checkedList.splice(index, 1);
         // console.log('aaaaaaa', checkedList.splice(index, 1));
@@ -60,16 +59,25 @@ const AntCart = ({ match, location, history }) => {
   };
 
   const onGroupChange = (checkedList) => {
-    console.log('groupitem', checkedList);
+    // console.log('groupitem', checkedList);
     // setCheckedList(checkedList);
   };
 
   const onCheck = (e) => {
-    console.log('onCheck', e);
+    // console.log('onCheck', e);
 
     if (e.target.checked) {
       setCheckAll(true);
-      setCheckedList(cart.cartFoods);
+
+      var d = [];
+      for (var i = 0, iLen = cart.cartFoods.length; i < iLen; i++) {
+        if (cart.cartFoods[i].amount === 0) {
+        } else {
+          d.push(cart.cartFoods[i]);
+        }
+      }
+
+      setCheckedList(d);
     } else {
       setCheckAll(false);
       setCheckedList([]);
@@ -177,12 +185,19 @@ const AntCart = ({ match, location, history }) => {
               <Row style={{ margin: '16px' }}>
                 <Col span={12}>
                   <Row>
-                    <Checkbox
-                      value={item}
-                      onChange={onGroupChangeItem}
-                      disabled={item.amount === 0 ? true : false}>
-                      <Title level={5}></Title>
-                    </Checkbox>
+                    {item.amount !== 0 ? (
+                      <Checkbox
+                        value={item}
+                        onChange={onGroupChangeItem}
+                        
+                        
+                        >
+                        <Title level={5}></Title>
+                      </Checkbox>
+                    ) : (
+                      <></>
+                    )}
+
                     <Image
                       width={200}
                       src={item.image}

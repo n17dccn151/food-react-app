@@ -5,6 +5,7 @@ import { getUserDetailList } from '../actions/userActions.js';
 import NumberFormat from 'react-number-format';
 import { createOrder } from '../actions/orderActions.js';
 import SuccessResult from '../components/SuccessResult.js';
+import { userCart } from '../actions/cartActions.js';
 import {
   Row,
   Col,
@@ -57,6 +58,7 @@ const AntOrder = ({ match, location, history }) => {
     if (success) {
       console.log('jetsss');
       // message.success('Added to cart');
+
       dispatch({ type: ORDER_CREATE_RESET });
     } else if (success === false) {
       message.warning('This is a warning message');
@@ -73,7 +75,7 @@ const AntOrder = ({ match, location, history }) => {
     dispatch1(createOrder(orderFoods));
     console.log('submit', orderFoods);
   };
-  console.log('de', details);
+
   const dispatch = useDispatch();
   const cartDetail = useSelector((state) => state.cart);
   const { loading, error, cart } = cartDetail;
@@ -81,7 +83,14 @@ const AntOrder = ({ match, location, history }) => {
   useEffect(() => {
     if (!loading && !loadingDetails) {
       if (details.length > 0) {
-        setCheckedAddress(details[0]);
+        console.log('de', details[0]);
+        setCheckedAddress(
+          details.filter((element) => element.status == 'DEFAULT')[0]
+        );
+      }
+
+      if (details.length === 0) {
+        history.push('/userinfo');
       }
     }
   }, [loading, loadingDetails]);
@@ -91,11 +100,12 @@ const AntOrder = ({ match, location, history }) => {
   }
 
   return typeof checkedAddress === 'undefined' ? (
-    <></>
+    <>{checkedList.size} </>
   ) : success ? (
     <SuccessResult test={order.orderId} />
   ) : (
     <>
+      {checkedList.size}
       <Row style={{ margin: '16px' }}>
         <Col span={6}>
           {/* style={{ margin: '0 auto' }} */}
@@ -105,7 +115,7 @@ const AntOrder = ({ match, location, history }) => {
           </Row>
 
           <Row style={{ margin: '16px' }}>
-            <Space direction='vertical'>
+            <Space direction='vertical' style={{ width: '80%' }}>
               <Row>
                 <Col span={12}>
                   <Tag color='blue'>Name: </Tag>

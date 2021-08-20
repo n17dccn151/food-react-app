@@ -18,14 +18,21 @@ const CartItem = () => {
 
   useEffect(() => {
     dispatch(userCart());
-  }, [dispatch]);
+  }, []);
 
-  console.log('xxxxx', cart);
+  function total() {
+    var t = 0;
+    cart.cartFoods.map((item) => {
+      t = t + item.amount;
+    });
+
+    return t;
+  }
   return (
     loading === false && (
       <Menu.Item key='cart' icon={<ShoppingOutlined />}>
         <Link to='/cart' />
-        <Badge count={cart.cartFoods.length} size='small'></Badge>
+        <Badge count={total()} size='small'></Badge>
       </Menu.Item>
     )
   );

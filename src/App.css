@@ -32,3 +32,30 @@
   margin-bottom: 60px;
   box-shadow: 0px -1px 0 0 #e8e8e8 inset;
 }
+
+.chat {
+  padding: 16px;
+}
+
+.chat .message-list {
+  max-height: 500px;
+}
+
+.chat .chat-list {
+  max-height: 500px;
+}
+
+.chat .input-chat {
+  position: fixed;
+  z-index: 100;
+  bottom: 0;
+  width: 50%;
+}
+
+
+
+
+.product-card a {
+    color: #FFFFFF;
+    text-decoration: none;
+}

@@ -5,6 +5,8 @@ import NumberFormat from 'react-number-format';
 import { getFullDate } from '../helper/getFullDate.js';
 import { updateOrder } from '../actions/orderActions';
 import { ORDER_UPDATE_RESET } from '../constants/orderConstants';
+import AntError from '../components/AntError.js';
+import AntLoader from '../components/AntLoading.js';
 import {
   Image,
   Table,
@@ -64,13 +66,13 @@ const AntAdminListOrders = () => {
   useEffect(() => {
     if (successUpdateOrder === true) {
       message.success('Updates order id: ' + ressultOrder.orderId);
-      console.log('ok' + ressultOrder.orderId);
+      // console.log('ok' + ressultOrder.orderId);
       dispatch({ type: ORDER_UPDATE_RESET });
     } else if (successUpdateOrder === false) {
       message.warning('This is a warning message: ' + errorUpdateOrder);
     }
     dispatch(getListOrder());
-    message.success({ content: 'Loaded!', key, duration: 2 });
+    // message.success({ content: 'Loaded!', key, duration: 2 });
   }, [successUpdateOrder]);
 
   function handleButtonClick(e) {
@@ -319,17 +321,20 @@ const AntAdminListOrders = () => {
     );
   };
 
-  return (
-    !loading && (
-      <Layout className='site-layout'>
-        <Content style={{ margin: '0 16px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>Admin</Breadcrumb.Item>
-            <Breadcrumb.Item>Order</Breadcrumb.Item>
-          </Breadcrumb>
+  return loading ? (
+    <AntLoader />
+  ) : error ? (
+    <AntError />
+  ) : (
+    <Layout className='site-layout'>
+      <Content style={{ margin: '0 16px' }}>
+        <Breadcrumb style={{ margin: '16px 0' }}>
+          <Breadcrumb.Item>Admin</Breadcrumb.Item>
+          <Breadcrumb.Item>Order</Breadcrumb.Item>
+        </Breadcrumb>
 
-          <Row>
-            {/* <Col span={12}>
+        <Row>
+          {/* <Col span={12}>
               <MyPagination
                 total={orders.length}
                 current={current}
@@ -337,33 +342,32 @@ const AntAdminListOrders = () => {
               />
             </Col> */}
 
-            <Col span={12}></Col>
-          </Row>
+          <Col span={12}></Col>
+        </Row>
 
-          <Table
-            columns={columns}
-            rowKey='orderId'
-            // expandable={{
-            //   expandedRowRender: (record) => (
-            //     <p style={{ margin: 0 }}>{record.description}</p>
-            //   ),
-            //   rowExpandable: (record) => record.description !== '',
-            // }}
+        <Table
+          columns={columns}
+          rowKey='orderId'
+          // expandable={{
+          //   expandedRowRender: (record) => (
+          //     <p style={{ margin: 0 }}>{record.description}</p>
+          //   ),
+          //   rowExpandable: (record) => record.description !== '',
+          // }}
 
-            // dataSource={getData(current, pageSize)}
-            // pagination={false}
-            dataSource={orders}
-            pagination={{
-              pageSizeOptions: ['10', '20', '30'],
-              showSizeChanger: true,
-              locale: { items_per_page: '' },
-            }}
-            expandedRowRender={expandedRow}
-            scroll={{ x: '', y: 400 }}
-          />
-        </Content>
-      </Layout>
-    )
+          // dataSource={getData(current, pageSize)}
+          // pagination={false}
+          dataSource={orders}
+          pagination={{
+            pageSizeOptions: ['10', '20', '30'],
+            showSizeChanger: true,
+            locale: { items_per_page: '' },
+          }}
+          expandedRowRender={expandedRow}
+          scroll={{ x: '', y: 400 }}
+        />
+      </Content>
+    </Layout>
   );
 };
 

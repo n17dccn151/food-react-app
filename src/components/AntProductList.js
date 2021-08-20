@@ -3,7 +3,7 @@ import AntProduct from './AntProduct';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../actions/productActions.js';
 import { withRouter } from 'react-router';
-import { Layout, Divider, Space, Col, Pagination } from 'antd';
+import { Layout, Divider, Space, Col, Row, Pagination } from 'antd';
 import AntLoader from '../components/AntLoading';
 const AntProductList = ({ history, match }) => {
   const keyword = match.params.keyword;
@@ -17,16 +17,21 @@ const AntProductList = ({ history, match }) => {
 
   useEffect(() => {
     if (!loading) {
-      console.log('aaaaaaaaaaa', products.data.totalItems);
+      // console.log('aaaaaaaaaaa', products.data.totalItems);
     }
+
+    if (keyword != '') {
+      setCurrent(1);
+    }
+
     dispatch(listProducts(keyword, pageSize, current - 1));
   }, [dispatch, keyword, pageSize, current]);
 
   //const { foods, loading } = useGlobalContext();
 
-  if (loading === false) {
-    console.log('aaaaaaaaaaa', products.data.totalItems);
-  }
+  // if (loading === false) {
+  //   console.log('aaaaaaaaaaa', products.data.totalItems);
+  // }
 
   function onShowSizeChange(current, pageSize) {
     // console.log(current, pageSize);
@@ -52,18 +57,38 @@ const AntProductList = ({ history, match }) => {
   };
 
   return loading ? (
-    <AntLoader />
+    <div style={{ textAlign: 'center' }}>
+      <AntLoader />
+    </div>
   ) : (
     // <Layout className='site-layout'>
     <Content style={{ margin: '0 16px' }}>
-      <Divider>
+      {/* <Divider>
         <Space align='baseline' size={[16, 16]} wrap>
           {products.data.map((item) => {
             console.log(item);
             return <AntProduct key={item.foodId} {...item} />;
           })}
         </Space>
+      </Divider> */}
+
+      <Divider>
+        {/* <Space align='baseline' size={[16, 16]} wrap>
+          {products.data.map((item) => {
+            console.log(item);
+            return <AntProduct key={item.foodId} {...item} />;
+          })}
+        </Space> */}
+
+        <Row gutter={16} align='baseline' justify='start'>
+          {products.data.map((item) => (
+            <Col key={item.foodId} span={8}>
+              <AntProduct key={item.foodId} {...item} />
+            </Col>
+          ))}
+        </Row>
       </Divider>
+
       <Divider>
         <Col span={12}>
           <MyPagination

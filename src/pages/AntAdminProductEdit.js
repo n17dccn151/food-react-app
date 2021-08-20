@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { updateProduct } from '../actions/productActions';
-import { PRODUCT_CREATE_RESET } from '../constants/productConstants';
+import { PRODUCT_UPDATE_RESET } from '../constants/productConstants';
 import { IMAGE_ADD_IMAGE_RESET } from '../constants/imageConstants';
 import {
   Button,
@@ -95,8 +95,8 @@ const AntAdminProductEdit = ({ history, match }) => {
   useEffect(() => {
     if (successUpdateProduct === true) {
       message.success('Edit product id: ' + ressultProduct.foodId);
-
-      dispatch({ type: PRODUCT_CREATE_RESET });
+      // successUpdateProduct = '';
+      dispatch({ type: PRODUCT_UPDATE_RESET });
       history.push('/admin/products');
     } else if (successUpdateProduct === false) {
       message.warning('This is a warning message: ' + errorUpdateProduct);
