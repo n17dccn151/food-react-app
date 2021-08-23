@@ -19,6 +19,7 @@ import {
   Row,
   Col,
   Divider,
+  Modal,
 } from 'antd';
 import 'antd/dist/antd.css';
 import { Link } from 'react-router-dom';
@@ -73,6 +74,27 @@ const AntAdminListCategory = () => {
     // setPreviewVisible(false);
   };
 
+  ///
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewTitle, setPreviewTitle] = useState('');
+  const [progress, setProgress] = useState(0);
+
+  const onPreview = async (url) => {
+    console.log('ádasd', url);
+    // if (!file.url && !file.preview) {
+    //   file.preview = await getBase64(file.originFileObj);
+    // }
+
+    setPreviewImage(url);
+    setPreviewVisible(true);
+    setPreviewTitle(url.substring(url.lastIndexOf('/') + 1));
+  };
+
+  const handleCancel = () => {
+    setPreviewVisible(false);
+  };
+
   console.log(categories);
 
   const [current, setCurrent] = useState(1);
@@ -84,7 +106,13 @@ const AntAdminListCategory = () => {
       title: 'Image',
       dataIndex: 'image',
       render: (image) => (
-        <Image width={100} alt={image} src={image} preview={{}} />
+        <Image
+          width={100}
+          alt={image}
+          src={image}
+          preview={false}
+          onClick={() => onPreview(image)}
+        />
       ),
     },
     {
@@ -194,6 +222,14 @@ const AntAdminListCategory = () => {
           scroll={{ x: '', y: 400 }}
         />
       </Content>
+
+      <Modal
+        visible={previewVisible}
+        title={previewTitle}
+        footer={null}
+        onCancel={handleCancel}>
+        <img alt='example' style={{ width: '100%' }} src={previewImage} />
+      </Modal>
     </Layout>
   );
 };

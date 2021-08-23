@@ -4,6 +4,7 @@ import NumberFormat from 'react-number-format';
 import { createUser } from '../actions/userActions';
 import { updateUser } from '../actions/userActions';
 import { USER_UPDATE_RESET } from '../constants/userConstants';
+import { USER_DETAILS_RESET } from '../constants/userConstants';
 import { getUserDetails } from '../actions/userActions';
 
 import {
@@ -64,7 +65,7 @@ const AntAdminUserEdit = ({ history, match }) => {
     if (
       values.user.phone === userDetail.phone &&
       values.user.email === userDetail.email &&
-      values.user.role.length === userDetail.roles.length
+      values.user.roles.length === userDetail.roles.length
     ) {
       message.warning('You not change');
     } else {
@@ -72,8 +73,10 @@ const AntAdminUserEdit = ({ history, match }) => {
 
       dispatch(updateUser(userId, values.user));
     }
+
+    console.log(values);
   };
-  console.log(userDetail);
+
   useEffect(() => {
     if (!userDetail.phone) {
       console.log('2' + userId);
@@ -90,6 +93,8 @@ const AntAdminUserEdit = ({ history, match }) => {
     } else if (successUpdateUser === false) {
       message.warning('This is a warning message: ' + errorUpdateUser);
     }
+
+    dispatch({ type: USER_DETAILS_RESET });
   }, [successUpdateUser]);
 
   // useEffect(() => {
@@ -125,14 +130,18 @@ const AntAdminUserEdit = ({ history, match }) => {
             value: userDetail.email,
           },
           {
-            name: ['user', 'role'],
+            name: ['user', 'roles'],
             value: userDetail.roles,
           },
         ]}>
         <Form.Item
           name={['user', 'phone']}
           label='Phone'
-          rules={[{ required: true }]}>
+          rules={[
+            { required: true },
+            { min: 10, message: 'Phone must be minimum 10 characters.' },
+            { max: 11, message: 'Phone must be maximum 11 characters.' },
+          ]}>
           <Input />
         </Form.Item>
 
@@ -148,12 +157,13 @@ const AntAdminUserEdit = ({ history, match }) => {
               required: true,
               message: 'Please input your E-mail!',
             },
+            { max: 50, message: 'E-mail must be maximum 50 characters.' },
           ]}>
           <Input />
         </Form.Item>
 
         <Form.Item
-          name={['user', 'role']}
+          name={['user', 'roles']}
           label='Roles'
           rules={[
             {

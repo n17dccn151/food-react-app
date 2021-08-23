@@ -19,10 +19,11 @@ const AntProductList = ({ history, match }) => {
     if (!loading) {
       // console.log('aaaaaaaaaaa', products.data.totalItems);
     }
+    
 
-    if (keyword != '') {
-      setCurrent(1);
-    }
+    // if (keyword != '') {
+    //   setCurrent(1);
+    // }
 
     dispatch(listProducts(keyword, pageSize, current - 1));
   }, [dispatch, keyword, pageSize, current]);

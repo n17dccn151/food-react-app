@@ -193,7 +193,15 @@ const UserInfo = ({ match, location, history }) => {
             <Input />
           </Form.Item>
 
-          <Form.Item name={['userDetail', 'address']} label='Address'>
+          <Form.Item
+            name={['userDetail', 'address']}
+            label='Address'
+            rules={[
+              {
+                required: true,
+                message: 'Please input the address!',
+              },
+            ]}>
             <Input type='textarea' />
           </Form.Item>
         </Form>

@@ -7,7 +7,6 @@ import {
   Form,
   Input,
   Button,
-
   Space,
   Row,
   Col,
@@ -15,11 +14,9 @@ import {
   Carousel,
   message,
 } from 'antd';
-const { Title } = Typography;
 
-const DemoBox = (props) => (
-  <p className={`height-${props.value}`}>{props.children}</p>
-);
+const { Title, Link: AntLink } = Typography;
+
 const contentStyle = {
   height: '160px',
   color: '#fff',
@@ -29,8 +26,6 @@ const contentStyle = {
 };
 
 const Login = ({ location, history }) => {
-
-
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
@@ -111,6 +106,12 @@ const Login = ({ location, history }) => {
                 <Button type='primary' htmlType='submit'>
                   Log in
                 </Button>
+              </Space>
+            </Form.Item>
+
+            <Form.Item style={{ textAlign: 'center' }}>
+              <Space align='baseline'>
+                <AntLink href='/register'>Sign up</AntLink>
               </Space>
             </Form.Item>
           </Form>

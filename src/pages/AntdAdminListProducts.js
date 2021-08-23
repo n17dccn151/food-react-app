@@ -58,7 +58,7 @@ const AntdAdminListProducts = ({ history, match }) => {
 
     if (successDelete === true) {
       message.success('Deleted product');
-      dispatch(listProducts(keyword, pageSize, current - 1));
+      // dispatch(listProducts(keyword, pageSize, current - 1));
     } else if (successDelete === false) {
       message.warning('This is a warning message: ' + errorDelete);
     }
@@ -75,6 +75,27 @@ const AntdAdminListProducts = ({ history, match }) => {
     // setPreviewVisible(false);
   };
 
+  ///
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewTitle, setPreviewTitle] = useState('');
+  const [progress, setProgress] = useState(0);
+
+  const onPreview = async (url) => {
+    console.log('ádasd', url.url);
+    // if (!file.url && !file.preview) {
+    //   file.preview = await getBase64(file.originFileObj);
+    // }
+
+    // setPreviewImage(url);
+    // setPreviewVisible(true);
+    // setPreviewTitle(url.substring(url.lastIndexOf('/') + 1));
+  };
+
+  const handleCancel = () => {
+    setPreviewVisible(false);
+  };
+
   const columns = [
     {
       title: 'Image',
@@ -85,7 +106,8 @@ const AntdAdminListProducts = ({ history, match }) => {
             width={100}
             alt={{ ...images[0] }.url}
             src={{ ...images[0] }.url}
-            preview={{}}
+            preview={false}
+            onClick={() => onPreview({ ...images[0] })}
           />
         </div>
       ),
@@ -236,10 +258,18 @@ const AntdAdminListProducts = ({ history, match }) => {
             ),
             rowExpandable: (record) => record.description !== '',
           }}
-          scroll={{ x: '', y: 370 }}
+          scroll={{ x: '', y: 400 }}
           dataSource={products.data}
           pagination={false}
         />
+
+        <Modal
+          visible={previewVisible}
+          title={previewTitle}
+          footer={null}
+          onCancel={handleCancel}>
+          <img alt='example' style={{ width: '100%' }} src={previewImage} />
+        </Modal>
       </Content>
     </Layout>
   );

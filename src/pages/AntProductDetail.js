@@ -82,8 +82,12 @@ const AntProductDetail = ({ match, history }) => {
   ) : loading === false ? (
     <>
       <Row justify='space-around' align='middle'>
-        <Col span={12} style={({ margin: '0 auto' }, { padding: '55px' })}>
-          <Carousel autoplay style={{ maxWidth: '300px' }}>
+        <Col
+          span={12}
+          style={
+            ({ margin: '0 auto' }, { padding: '55px' }, { maxWidth: '300px' })
+          }>
+          <Carousel autoplay>
             {product.images.map((item) => (
               <div>
                 <h3 style={contentStyle}>

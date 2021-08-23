@@ -100,7 +100,6 @@ const AntAdminListOrders = () => {
           disabled={status === 'ORDERED'}>
           <Tag color='#108ee9'>ORDERED</Tag>
         </Popconfirm>
-        ;
       </Menu.Item>
 
       <Menu.Item key='DELIVERIED'>

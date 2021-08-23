@@ -247,6 +247,43 @@ export const createUser = (user) => async (dispatch, getState) => {
   }
 };
 
+
+
+export const signupUser = (user) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_REGISTER_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        // Authorization: `Bearer ${userInfo.accessToken}`,
+      },
+    };
+
+    const { data } = await API.post(`auth/signupv2`, user, config);
+
+    dispatch({
+      type: USER_REGISTER_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_REGISTER_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
 export const deleteUser = (id) => async (dispatch, getState) => {
   try {
     dispatch({

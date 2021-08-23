@@ -346,6 +346,8 @@ const AntAdminProductAdd = ({ history, match }) => {
             onCancel={handleCancel}>
             <img alt='example' style={{ width: '100%' }} src={previewImage} />
           </Modal>
+
+          
         </Form.Item>
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 14 }}>
           <Button type='primary' htmlType='submit'>

@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import NumberFormat from 'react-number-format';
-import { createUser } from '../actions/userActions';
+import { signupUser } from '../actions/userActions';
 import { USER_REGISTER_RESET } from '../constants/userConstants';
 
 import {
@@ -59,7 +59,7 @@ const Register = ({ history, match }) => {
 
   const onFinish = (values) => {
     console.log(values);
-    dispatch(createUser(values.user));
+    dispatch(signupUser(values.user));
   };
 
   useEffect(() => {
@@ -90,9 +90,39 @@ const Register = ({ history, match }) => {
           'checkbox-group': ['USER', 'ADMIN'],
         }}>
         <Form.Item
+          name={['user', 'firstName']}
+          label='First name'
+          rules={[
+            {
+              required: true,
+              message: 'Please input your First name!',
+            },
+            { min: 6, message: 'First name must be minimum 6 characters.' },
+            { max: 40, message: 'First name must be maximum 40 characters.' },
+          ]}>
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name={['user', 'lastName']}
+          label='Last name'
+          rules={[
+            {
+              required: true,
+              message: 'Please input your Last name!',
+            },
+            { min: 6, message: 'Last name must be minimum 6 characters.' },
+            { max: 40, message: 'Last name must be maximum 40 characters.' },
+          ]}>
+          <Input />
+        </Form.Item>
+        <Form.Item
           name={['user', 'phone']}
           label='Phone'
-          rules={[{ required: true }]}>
+          rules={[
+            { required: true },
+            { min: 10, message: 'Phone must be minimum 10 characters.' },
+            { max: 11, message: 'Phone must be maximum 11 characters.' },
+          ]}>
           <Input />
         </Form.Item>
 
@@ -108,6 +138,21 @@ const Register = ({ history, match }) => {
               required: true,
               message: 'Please input your E-mail!',
             },
+            { max: 50, message: 'E-mail must be maximum 50 characters.' },
+          ]}>
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name={['user', 'address']}
+          label='Address'
+          rules={[
+            {
+              required: true,
+              message: 'Please input your Address!',
+            },
+            { min: 6, message: 'Phone must be minimum 6 characters.' },
+            { max: 40, message: 'Phone must be maximum 40 characters.' },
           ]}>
           <Input />
         </Form.Item>
@@ -120,6 +165,8 @@ const Register = ({ history, match }) => {
               required: true,
               message: 'Please input your password!',
             },
+            { min: 6, message: 'Password must be minimum 6 characters.' },
+            { max: 40, message: 'Password must be maximum 40 characters.' },
           ]}
           hasFeedback>
           <Input.Password />
@@ -135,6 +182,7 @@ const Register = ({ history, match }) => {
               required: true,
               message: 'Please confirm your password!',
             },
+            { min: 5, message: 'Username must be minimum 5 characters.' },
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (!value || getFieldValue(['user', 'password']) === value) {

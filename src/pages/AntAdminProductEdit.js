@@ -177,7 +177,10 @@ const AntAdminProductEdit = ({ history, match }) => {
       if (
         values.product.name === product.name &&
         values.product.description === product.description &&
-        check === false
+        check === false &&
+        values.product.price === product.price &&
+        values.product.quantity === product.quantity &&
+        values.product.status === product.status
       ) {
         message.warning('You not change');
       } else {
@@ -390,10 +393,13 @@ const AntAdminProductEdit = ({ history, match }) => {
         <Form.Item
           name={['product', 'price']}
           label='Price'
-          rules={[{ type: 'number' }, { required: true }]}>
+          rules={[
+            { type: 'number', min: 10000, max: 550000 },
+            { required: true },
+          ]}>
           <InputNumber
-            min={0}
-            step={5000}
+            min={10000}
+            step={500}
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
             }
@@ -404,7 +410,10 @@ const AntAdminProductEdit = ({ history, match }) => {
         <Form.Item
           name={['product', 'quantity']}
           label='Quantity'
-          rules={[{ type: 'number', min: 0, max: 1000 }, { required: true }]}>
+          rules={[
+            { type: 'number', min: 100, max: 10000 },
+            { required: true },
+          ]}>
           <InputNumber />
         </Form.Item>
 

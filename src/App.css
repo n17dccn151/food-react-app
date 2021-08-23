@@ -38,11 +38,19 @@
 }
 
 .chat .message-list {
-  max-height: 500px;
+  max-height: 400px;
+}
+
+.chat .input-chat-user {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 16px;
 }
 
 .chat .chat-list {
-  max-height: 500px;
+  max-height: 600px;
 }
 
 .chat .input-chat {
@@ -50,12 +58,10 @@
   z-index: 100;
   bottom: 0;
   width: 50%;
+  margin: 16px;
 }
 
-
-
-
 .product-card a {
-    color: #FFFFFF;
-    text-decoration: none;
+  color: #ffffff;
+  text-decoration: none;
 }
