@@ -129,7 +129,7 @@ const AntdAdminListProducts = ({ history, match }) => {
             value={record.price}
             displayType={'text'}
             thousandSeparator={true}
-            prefix={'$ '}
+            suffix={'đ'}
           />
         </div>
       ),

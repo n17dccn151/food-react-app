@@ -97,7 +97,7 @@ const Register = ({ history, match }) => {
               required: true,
               message: 'Please input your First name!',
             },
-            { min: 6, message: 'First name must be minimum 6 characters.' },
+            { min: 1, message: 'First name must be minimum 1 characters.' },
             { max: 40, message: 'First name must be maximum 40 characters.' },
           ]}>
           <Input />
@@ -110,7 +110,7 @@ const Register = ({ history, match }) => {
               required: true,
               message: 'Please input your Last name!',
             },
-            { min: 6, message: 'Last name must be minimum 6 characters.' },
+            { min: 1, message: 'Last name must be minimum 1 characters.' },
             { max: 40, message: 'Last name must be maximum 40 characters.' },
           ]}>
           <Input />

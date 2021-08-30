@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { updateProduct } from '../actions/productActions';
 import { PRODUCT_UPDATE_RESET } from '../constants/productConstants';
+import { PRODUCT_DETAIL_RESET } from '../constants/productConstants';
 import { IMAGE_ADD_IMAGE_RESET } from '../constants/imageConstants';
 import {
   Button,
@@ -50,7 +51,7 @@ const AntAdminProductEdit = ({ history, match }) => {
   const [newFileList, setNewFileList] = useState([]);
   const [exisFileList, setExistFileList] = useState([]);
   const [productEdit, setProductEdit] = useState({});
-
+  const [nameCategory, setNameCategory] = useState('');
   const {
     loading: loadingCreateImage,
     success: successCreateImage,
@@ -64,6 +65,14 @@ const AntAdminProductEdit = ({ history, match }) => {
     error: errorUpdateProduct,
     product: ressultProduct,
   } = productUpdate;
+
+  const [inputs, setInputs] = useState({
+    name: '',
+    quantity: '',
+    price: '',
+    description: '',
+    status: '',
+  });
 
   const [fileList, setFileList] = useState([{}]);
 
@@ -86,6 +95,7 @@ const AntAdminProductEdit = ({ history, match }) => {
     } else {
       console.log('3');
       console.log(product);
+      setInputs(product);
       setFileList(product.images);
     }
   }, [dispatch, productId, product]);
@@ -97,6 +107,7 @@ const AntAdminProductEdit = ({ history, match }) => {
       message.success('Edit product id: ' + ressultProduct.foodId);
       // successUpdateProduct = '';
       dispatch({ type: PRODUCT_UPDATE_RESET });
+      dispatch({ type: PRODUCT_DETAIL_RESET });
       history.push('/admin/products');
     } else if (successUpdateProduct === false) {
       message.warning('This is a warning message: ' + errorUpdateProduct);
@@ -137,10 +148,22 @@ const AntAdminProductEdit = ({ history, match }) => {
     }
   }, [successCreateImage]);
 
-  let nameCategory;
+  // let nameCategory;
   useEffect(() => {
     dispatch(listCategories());
+
+    // if (loadingListCategory === false && loadingDetail === false) {
+    //  consolr.
+    // }
   }, [dispatch]);
+
+  useEffect(() => {
+    if (loadingListCategory === false && loadingDetail === false) {
+      setNameCategory(
+        categories.find((x) => x.categoryId === product.categoryId).name
+      );
+    }
+  }, [loadingListCategory, loadingDetail]);
 
   const { userInfo } = user;
 
@@ -235,11 +258,11 @@ const AntAdminProductEdit = ({ history, match }) => {
     // console.log(values);
   };
 
-  if (loadingListCategory === false && loadingDetail === false) {
-    nameCategory = categories.find(
-      (x) => x.categoryId === product.categoryId
-    ).name;
-  }
+  // if (loadingListCategory === false && loadingDetail === false) {
+  //   nameCategory = categories.find(
+  //     (x) => x.categoryId === product.categoryId
+  //   ).name;
+  // }
   const [imageList, setImageList] = useState([]);
 
   const [file, setFile] = useState();
@@ -340,6 +363,10 @@ const AntAdminProductEdit = ({ history, match }) => {
     }
   };
 
+  const handleOnChange = (changedValues, allValues) => {
+    setInputs(allValues.product);
+  };
+
   return (
     <Content style={{ margin: '0 16px' }}>
       <Breadcrumb style={{ margin: '16px 0' }}>
@@ -351,25 +378,26 @@ const AntAdminProductEdit = ({ history, match }) => {
         {...layout}
         name='nest-messages'
         onFinish={onFinish}
+        onValuesChange={handleOnChange}
         validateMessages={validateMessages}
         wrapperCol={{ sm: 24 }}
         style={{ width: '80%', marginRight: 0 }}
         fields={[
           {
             name: ['product', 'name'],
-            value: product.name,
+            value: inputs.name,
           },
           {
             name: ['product', 'quantity'],
-            value: product.quantity,
+            value: inputs.quantity,
           },
           {
             name: ['product', 'price'],
-            value: product.price,
+            value: inputs.price,
           },
           {
             name: ['product', 'description'],
-            value: product.description,
+            value: inputs.description,
           },
           {
             name: ['product', 'categoryId'],
@@ -377,7 +405,7 @@ const AntAdminProductEdit = ({ history, match }) => {
           },
           {
             name: ['product', 'status'],
-            value: product.status,
+            value: inputs.status,
           },
         ]}>
         <Form.Item
@@ -410,10 +438,7 @@ const AntAdminProductEdit = ({ history, match }) => {
         <Form.Item
           name={['product', 'quantity']}
           label='Quantity'
-          rules={[
-            { type: 'number', min: 100, max: 10000 },
-            { required: true },
-          ]}>
+          rules={[{ type: 'number', min: 1, max: 10000 }, { required: true }]}>
           <InputNumber />
         </Form.Item>
 
@@ -424,7 +449,7 @@ const AntAdminProductEdit = ({ history, match }) => {
             { required: true },
             { min: 10, message: 'Description must be minimum 10 characters.' },
             {
-              max: 100,
+              max: 300,
               message: 'Description must be maximum 100 characters.',
             },
           ]}>

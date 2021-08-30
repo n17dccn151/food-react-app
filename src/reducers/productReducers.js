@@ -17,6 +17,7 @@ import {
   PRODUCT_UPDATE_FAIL,
   PRODUCT_UPDATE_RESET,
   PRODUCT_DELETE_RESET,
+  PRODUCT_DETAIL_RESET,
 } from '../constants/productConstants.js';
 
 export const productListReducer = (state = { products: [] }, action) => {
@@ -42,6 +43,8 @@ export const productDetailsReducer = (state = { product: {} }, action) => {
       return { loading: false, product: action.payload };
     case PRODUCT_DETAILS_FAIL:
       return { loading: false, error: action.payload };
+    case PRODUCT_DETAIL_RESET:
+      return { product: {} };
     default:
       return state;
   }

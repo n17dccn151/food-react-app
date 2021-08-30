@@ -17,6 +17,7 @@ import {
   CATEGORY_DETAILS_SUCCESS,
   CATEGORY_DETAILS_FAIL,
   CATEGORY_DELETE_RESET,
+  CATEGORY_DETAILS_RESET,
 } from '../constants/categoryConstants.js';
 
 export const categoryListReducer = (state = { categories: [] }, action) => {
@@ -40,6 +41,8 @@ export const categoryDetailsReducer = (state = { category: {} }, action) => {
       return { loading: false, category: action.payload };
     case CATEGORY_DETAILS_FAIL:
       return { loading: false, error: action.payload };
+    case CATEGORY_DETAILS_RESET:
+      return { category: {} };
     default:
       return state;
   }

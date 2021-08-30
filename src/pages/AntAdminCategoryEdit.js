@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { updateCategory } from '../actions/categoryActions.js';
 import { CATEGORY_UPDATE_RESET } from '../constants/categoryConstants';
+import { CATEGORY_DETAILS_RESET } from '../constants/categoryConstants';
 import { IMAGE_ADD_IMAGE_RESET } from '../constants/imageConstants';
 import {
   Button,
@@ -43,6 +44,14 @@ const AntAdminCategoryEdit = ({ history, match }) => {
   const [newFileList, setNewFileList] = useState([]);
   const [exisFileList, setExistFileList] = useState([]);
   const [categoryEdit, setCategoryEdit] = useState({});
+
+
+
+  const [inputs, setInputs] = useState({
+    name: '',
+    description: '',
+  });
+
   const {
     loading: loadingCreateImage,
     success: successCreateImage,
@@ -63,14 +72,14 @@ const AntAdminCategoryEdit = ({ history, match }) => {
 
   useEffect(() => {
     if (!category.name || category.categoryId != categoryId) {
-      console.log('2');
       dispatch(getCategoryDetails(categoryId));
     } else {
+      setInputs(category);
       setFileList([{ url: category.image }]);
     }
   }, [dispatch, categoryId, category]);
 
-  console.log('hhahah', category);
+  // console.log('hhahah', category);
   const { userInfo } = user;
 
   const layout = {
@@ -96,11 +105,11 @@ const AntAdminCategoryEdit = ({ history, match }) => {
 
   useEffect(() => {
     if (successCreateImage === true) {
-      console.log('uploaded', images.data.url);
-      console.log('exist', exisFileList);
+      // console.log('uploaded', images.data.url);
+      // console.log('exist', exisFileList);
       categoryEdit.image = images.data.url[0];
       dispatch(updateCategory(categoryId, categoryEdit));
-      console.log('____xxxxxxxxxxx', categoryEdit);
+      // console.log('____xxxxxxxxxxx', categoryEdit);
       dispatch({ type: IMAGE_ADD_IMAGE_RESET });
     } else if (successCreateImage === false) {
       message.warning('This is a warning message: ' + errorCreateImage);
@@ -110,17 +119,18 @@ const AntAdminCategoryEdit = ({ history, match }) => {
   useEffect(() => {
     if (successUpdateCategory === true) {
       message.success('Edit category id: ' + ressultCategory.categoryId);
-      console.log('ok' + ressultCategory.categoryId);
+      // console.log('ok' + ressultCategory.categoryId);
       dispatch({ type: CATEGORY_UPDATE_RESET });
+      dispatch({ type: CATEGORY_DETAILS_RESET });
       history.push('/admin/category');
     } else if (successUpdateCategory === false) {
       message.warning('This is a warning message: ' + errorUpdateCategory);
     }
   }, [successUpdateCategory]);
 
-  console.log(' file list', fileList);
-  console.log('new file list', newFileList);
-  console.log('exist file list', exisFileList);
+  // console.log(' file list', fileList);
+  // console.log('new file list', newFileList);
+  // console.log('exist file list', exisFileList);
   const onFinish = (values) => {
     if (fileList.length === 0) {
       message.warning('Please add image');
@@ -147,24 +157,24 @@ const AntAdminCategoryEdit = ({ history, match }) => {
         Array.from(fileList).forEach((image) => {
           if (image.url) {
             checkUrl = 0;
-            console.log('have url', image);
+            // console.log('have url', image);
             setExistFileList([...exisFileList, image]);
 
             // setNewFileList(fileList.filter((item) => item.url !== image.url));
           } else {
             checkNotUrl = 0;
-            console.log('not url', image);
+            // console.log('not url', image);
             setNewFileList([...newFileList, image]);
             fmData.append('files', image.originFileObj);
           }
         });
         if (checkNotUrl === 0) {
-          console.log('ok');
+          // console.log('ok');
           dispatch(createImage(fmData));
         }
 
         if (checkNotUrl < 0 && checkUrl === 0) {
-          console.log('upload exist');
+          // console.log('upload exist');
           values.category.image = category.image;
           dispatch(updateCategory(categoryId, values.category));
         }
@@ -238,7 +248,7 @@ const AntAdminCategoryEdit = ({ history, match }) => {
 
       return false;
     } else {
-      console.log('file', file, 'fileList', fileList);
+      // console.log('file', file, 'fileList', fileList);
       return true;
     }
   };
@@ -259,10 +269,14 @@ const AntAdminCategoryEdit = ({ history, match }) => {
     try {
       onSuccess('Ok');
     } catch (err) {
-      console.log('Eroor: ', err);
+      // console.log('Eroor: ', err);
       const error = new Error('Some error');
       onError({ err });
     }
+  };
+
+  const handleOnChange = (changedValues, allValues) => {
+    setInputs(allValues.category);
   };
 
   return (
@@ -273,6 +287,9 @@ const AntAdminCategoryEdit = ({ history, match }) => {
       </Breadcrumb>
 
       <Form
+        // onFieldsChange={(e) => console.log(e)}
+        onValuesChange={handleOnChange}
+        preserve={false}
         {...layout}
         name='nest-messages'
         onFinish={onFinish}
@@ -282,11 +299,11 @@ const AntAdminCategoryEdit = ({ history, match }) => {
         fields={[
           {
             name: ['category', 'name'],
-            value: category.name,
+            value: inputs.name,
           },
           {
             name: ['category', 'description'],
-            value: category.description,
+            value: inputs.description,
           },
         ]}>
         <Form.Item
@@ -316,6 +333,7 @@ const AntAdminCategoryEdit = ({ history, match }) => {
 
         <Form.Item
           label='Image'
+          // name={['category', 'test']}
           // rules={[{ required: true }]}
         >
           <Upload
@@ -337,6 +355,7 @@ const AntAdminCategoryEdit = ({ history, match }) => {
             <img alt='example' style={{ width: '100%' }} src={previewImage} />
           </Modal>
         </Form.Item>
+
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 14 }}>
           <Button type='primary' htmlType='submit'>
             Submit

@@ -111,7 +111,7 @@ const AntProductDetail = ({ match, history }) => {
               value={product.price}
               displayType={'text'}
               thousandSeparator={true}
-              prefix={'$ '}
+              suffix={'đ'}
             />
           </Title>
           <Rate
@@ -153,18 +153,13 @@ const AntProductDetail = ({ match, history }) => {
       </Row>
       <Space style={{ margin: '32px' }}>
         <Typography>
-          <Title style={{ fontSize: '20px' }}>Description</Title>
-          <Paragraph>
-            In the process of internal desktop applications development, many
-            different design specs and implementations would be involved, which
-            might cause designers and developers difficulties and duplication
-            and reduce the efficiency of development.
-          </Paragraph>
+          <Title style={{ fontSize: '20px' }}>Mô tả</Title>
+          <Paragraph>{product.description}</Paragraph>
         </Typography>
       </Space>
 
       <Space style={{ margin: '0 32px' }} direction='vertical'>
-        <Descriptions title='Rating'></Descriptions>
+        <Descriptions title='Đánh giá'></Descriptions>
 
         {product.rating.map((item) => (
           <Descriptions title=''>

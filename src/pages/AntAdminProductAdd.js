@@ -264,7 +264,7 @@ const AntAdminProductAdd = ({ history, match }) => {
           rules={[{ type: 'number' }, { required: true }]}>
           <InputNumber
             min={10000}
-            step={5000}
+            step={500}
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
             }
@@ -275,7 +275,7 @@ const AntAdminProductAdd = ({ history, match }) => {
         <Form.Item
           name={['product', 'quantity']}
           label='Quantity'
-          rules={[{ type: 'number', min: 0, max: 1000 }, { required: true }]}>
+          rules={[{ type: 'number', min: 1, max: 1000 }, { required: true }]}>
           <InputNumber />
           {/* <NumberFormat
             thousandSeparator={true}
@@ -292,7 +292,7 @@ const AntAdminProductAdd = ({ history, match }) => {
             { required: true },
             { min: 10, message: 'Description must be minimum 10 characters.' },
             {
-              max: 100,
+              max: 300,
               message: 'Description must be maximum 100 characters.',
             },
           ]}>
@@ -346,8 +346,6 @@ const AntAdminProductAdd = ({ history, match }) => {
             onCancel={handleCancel}>
             <img alt='example' style={{ width: '100%' }} src={previewImage} />
           </Modal>
-
-          
         </Form.Item>
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 14 }}>
           <Button type='primary' htmlType='submit'>
