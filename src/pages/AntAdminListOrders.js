@@ -155,7 +155,7 @@ const AntAdminListOrders = () => {
                 value={record.price}
                 displayType={'text'}
                 thousandSeparator={true}
-                prefix={'$ '}
+                suffix={'đ'}
               />
             </div>
           ) : null,
@@ -232,7 +232,7 @@ const AntAdminListOrders = () => {
               )}
               displayType={'text'}
               thousandSeparator={true}
-              prefix={'$ '}
+              suffix={'đ'}
             />
           </div>
         ) : //   <Popconfirm

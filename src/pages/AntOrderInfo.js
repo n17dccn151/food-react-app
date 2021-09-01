@@ -182,7 +182,7 @@ const AntOrderInfo = () => {
             value={priceFood}
             displayType={'text'}
             thousandSeparator={true}
-            prefix={'$ '}
+            suffix={'đ'}
           />
         ),
       },
@@ -261,7 +261,7 @@ const AntOrderInfo = () => {
               )}
               displayType={'text'}
               thousandSeparator={true}
-              prefix={'$ '}
+              suffix={'đ'}
             />
           </div>
         ) : //   <Popconfirm

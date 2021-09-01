@@ -188,7 +188,7 @@ const AntOrder = ({ match, location, history }) => {
                   value={item.price}
                   displayType={'text'}
                   thousandSeparator={true}
-                  prefix={'$ '}
+                  suffix={'đ'}
                 />
 
                 <Row style={{ marginTop: '16px' }}>{item.amount}</Row>
@@ -211,7 +211,7 @@ const AntOrder = ({ match, location, history }) => {
                 )}
                 displayType={'text'}
                 thousandSeparator={true}
-                prefix={'$ '}
+                suffix={'đ'}
               />
             </Row>
             <Row>
